@@ -9,10 +9,8 @@ logger = logging.getLogger(__name__)
 
 
 class EncryptedCharField(CharField):
-    key = ''
-    cipher = None
 
-    def __init__(self, key='', *args, **kwargs):
+    def __init__(self, key:str='', *args, **kwargs):
         self.key = key
         self.cipher = Fernet(key)
         super().__init__(*args, **kwargs)

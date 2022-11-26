@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.forms import ModelForm, PasswordInput
 
-from ldap.models import Domain
+from ldap.models import Domain, Container, GroupType, UserType, UserDomainLink, GroupDomainLink
 
 
 class DomainAdminForm(ModelForm):
@@ -18,3 +18,8 @@ class DomainAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Domain, DomainAdmin)
+admin.site.register(Container)
+admin.site.register(GroupType)
+admin.site.register(UserType)
+admin.site.register(UserDomainLink)
+admin.site.register(GroupDomainLink)
