@@ -20,4 +20,4 @@ class User(AbstractUser):
         return self.display_name
 
     def get_short_name(self):
-        return self.display_name
+        return self.username

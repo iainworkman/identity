@@ -1,3 +1,5 @@
 {
-    "python.analysis.typeCheckingMode": "off"
+    "python.analysis.typeCheckingMode": "off",
+    "python.envFile": "${workspaceFolder}/.venv",
+    "python.linting.pylintEnabled": true
 }
