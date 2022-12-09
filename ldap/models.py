@@ -247,13 +247,79 @@ class DomainEntrySource(models.Model):
             return {
                 'error': [],
                 'warning': [],
-                'info': ['Taking no action: source is read only']
+                'info': ['Taking no push actions: source is read only']
             }
         return {
             'error': [],
             'warning': [],
             'info': []
         }
+
+    def _pull_user(self, domain_entry, identifier, results):
+        user_model = get_user_model()
+        try:
+            user = user_model.objects.get(username=identifier)
+        except user_model.DoesNotExist:
+            if hasattr(settings, 'USER_CREATE_METHOD'):
+                user_create_method = import_string(settings.USER_CREATE_METHOD)
+                user = user_create_method(domain_entry)
+            else:
+                user = user_model(
+                    username=identifier,
+                    password=user_model.objects.make_random_password()
+                )
+                user.save()
+            UserDomainLink(
+                user=user,
+                user_source=self,
+                dn=domain_entry.distinguishedName,
+                username=identifier
+            ).save()
+            results['info'].append(f'Created user {user}')
+        else:
+            try:
+                UserDomainLink.objects.get(user=user, user_source=self)
+            except UserDomainLink.DoesNotExist:
+                UserDomainLink(
+                    user=user,
+                    user_source=self,
+                    dn=domain_entry.distinguishedName,
+                    username=identifier
+                ).save()
+                results['info'].append(
+                    f'Linked existing user {user}'
+                )
+
+    def _pull_group(self, domain_entry, identifier, results):
+        try:
+            group = Group.objects.get(name=identifier)
+        except Group.DoesNotExist:
+            group = Group(
+                name=identifier
+            )
+            group.save()
+            GroupDomainLink(
+                group=group,
+                group_source=self,
+                dn=domain_entry.distinguishedName,
+                group_name=identifier
+            ).save()
+            results['info'].append(
+                f'Created Group {group}'
+            )
+        else:
+            try:
+                GroupDomainLink.objects.get(group=group, group_source=self)
+            except GroupDomainLink.DoesNotExist:
+                GroupDomainLink(
+                    group=group,
+                    group_source=self,
+                    dn=domain_entry.distinguishedName,
+                    group_name=identifier
+                ).save()
+                results['info'].append(
+                    f'Linked existing group {group}'
+                )
 
     def pull_entries(self):
 
@@ -263,7 +329,6 @@ class DomainEntrySource(models.Model):
             'info': []
         }
 
-        user_model = get_user_model()
         domain_entries = self.fetch_all_entries()
 
         for domain_entry in domain_entries:
@@ -276,70 +341,9 @@ class DomainEntrySource(models.Model):
             else:
                 identifier = getattr(domain_entry, self.identifying_attribute).value
                 if self.source_type == self.USER:
-                    try:
-                        user = user_model.objects.get(username=identifier)
-                    except user_model.DoesNotExist:
-                        if hasattr(settings, 'USER_CREATE_METHOD'):
-                            user_create_method = import_string(settings.USER_CREATE_METHOD)
-                            user = user_create_method(domain_entry)
-                        else:
-                            user = user_model(
-                                username=identifier,
-                                password=user_model.objects.make_random_password()
-                            )
-                            user.save()
-                        UserDomainLink(
-                            user=user,
-                            user_source=self,
-                            dn=domain_entry.distinguishedName,
-                            username=identifier
-                        ).save()
-                        results['info'].append(f'Created user {user}')
-                    else:
-                        try:
-                            UserDomainLink.objects.get(user=user, user_source=self)
-                        except UserDomainLink.DoesNotExist:
-                            UserDomainLink(
-                                user=user,
-                                user_source=self,
-                                dn=domain_entry.distinguishedName,
-                                username=identifier
-                            ).save()
-                            results['info'].append(
-                                f'Linked existing user {user}'
-                            )
+                    self._pull_user(domain_entry, identifier, results)
                 else:
-                    try:
-                        group = Group.objects.get(name=identifier)
-                    except Group.DoesNotExist:
-                        group = Group(
-                            name=identifier
-                        )
-                        group.save()
-                        GroupDomainLink(
-                            group=group,
-                            group_source=self,
-                            dn=domain_entry.distinguishedName,
-                            group_name=identifier
-                        ).save()
-                        results['info'].append(
-                            f'Created Group {group}'
-                        )
-                    else:
-                        try:
-                            GroupDomainLink.objects.get(group=group, group_source=self)
-                        except GroupDomainLink.DoesNotExist:
-                            GroupDomainLink(
-                                group=group,
-                                group_source=self,
-                                dn=domain_entry.distinguishedName,
-                                group_name=identifier
-                            ).save()
-                            results['info'].append(
-                                f'Linked existing group {group}'
-                            )
-
-
+                    self._pull_group(domain_entry, identifier, results)
 
         return results
 

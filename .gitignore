@@ -8,7 +8,11 @@ __pycache__/
 # C extensions
 *.so
 
+development/ldap_data
+
 # Distribution / packaging
+
+
 .python-version
 .Python
 build/

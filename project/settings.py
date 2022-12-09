@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sisulu.apps.SisuluConfig',
-    'ldap.apps.LdapConfig'
+    'ldap.apps.LdapConfig',
+    'organizations.apps.OrganizationsConfig'
 ]
 
 MIDDLEWARE = [

@@ -9,5 +9,5 @@ services:
     environment:
       - LDAP_LOGLEVEL=-1
     volumes:
-      - './development:/ldifs:r'
+      - './development/ldif_files:/ldifs:r'
       - '${HOST_LDAP_DATA_PATH:-./development/ldap_data}:/bitnami/openldap'
