@@ -1,4 +1,4 @@
-dn: ou=users,dc=example,dc=org
+dn: ou=domain users,dc=example,dc=org
 changetype: add
 objectClass: organizationalUnit
-ou: users
+ou: domain users

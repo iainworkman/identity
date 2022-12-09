@@ -9,5 +9,16 @@ services:
     environment:
       - LDAP_LOGLEVEL=-1
     volumes:
-      - './development/ldif_files:/ldifs:r'
+      - './development/ldif_files:/ldifs'
       - '${HOST_LDAP_DATA_PATH:-./development/ldap_data}:/bitnami/openldap'
+
+
+  identity-task-broker:
+    image: rabbitmq:3-management-alpine
+    container_name: identity-task-broker
+    environment:
+      - RABBITMQ_DEFAULT_USER=${TASK_BROKER_USER:-identity-celery}
+      - RABBITMQ_DEFAULT_PASS=${TASK_BROKER_PASSWORD}
+    ports:
+      - ${TASK_BROKER_PORT:-5672}:5672
+      - ${TASK_BROKER_MANAGEMENT_PORT:-15672}:15672

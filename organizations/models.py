@@ -61,15 +61,19 @@ class UserRelationshipQuerySet(models.QuerySet):
         return self.filter(
             Q(starts_on__isnull=True) | Q(starts_on__lte=active_date)
             &
-            Q(ends_after__isnnull=True) | Q(ends_after__gte=active_date)
+            Q(ends_after__isnull=True) | Q(ends_after__gte=active_date)
         )
 
 
 class UserRelationship(models.Model):
 
     user = models.ForeignKey(
-        user_model, on_delete=models.CASCADE, related_name='relationships',
+        user_model, on_delete=models.CASCADE, related_name='user_relationships',
         help_text='The user who this membership applies to'
+    )
+    relationship = models.ForeignKey(
+        Relationship, on_delete=models.CASCADE, related_name='user_relationships',
+        help_text='The relationship which the user is a member of'
     )
     starts_on = models.DateField(
         null=True, blank=True,
