@@ -7,10 +7,12 @@ services:
     ports:
       - '${HOST_LDAP_PORT:-1389}:1389'
     environment:
+      - LDAP_ADMIN_USERNAME=${LDAP_ADMIN_USERNAME:-admin}
+      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}
       - LDAP_LOGLEVEL=-1
     volumes:
       - './development/ldif_files:/ldifs'
-      - '${HOST_LDAP_DATA_PATH:-./development/ldap_data}:/bitnami/openldap'
+      - '${HOST_LDAP_DATA_PATH:-./development/ldap_data}:/bitnami/openldap:z'
 
 
   identity-task-broker:

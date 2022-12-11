@@ -12,6 +12,7 @@ class UserAdminForm(ModelForm):
 
 class UserAdmin(admin.ModelAdmin):
     form = UserAdminForm
+    search_fields = ['username']
 
 
 admin.site.register(User, UserAdmin)

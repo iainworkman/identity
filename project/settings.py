@@ -115,6 +115,7 @@ CELERY_BROKER_URL = 'amqp://{user}:{password}@{host}:{port}'.format(
 CELERY_TIME_ZONE = 'Canada/Saskatchewan'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_EXTENDED = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

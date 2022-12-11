@@ -1,4 +1,0 @@
-dn: ou=domain users,dc=example,dc=org
-changetype: add
-objectClass: organizationalUnit
-ou: domain users

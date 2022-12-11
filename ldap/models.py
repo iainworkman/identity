@@ -272,7 +272,7 @@ class DomainEntrySource(models.Model):
             UserDomainLink(
                 user=user,
                 user_source=self,
-                dn=domain_entry.distinguishedName,
+                dn=domain_entry.entry_dn,
                 username=identifier
             ).save()
             results['info'].append(f'Created user {user}')
@@ -283,7 +283,7 @@ class DomainEntrySource(models.Model):
                 UserDomainLink(
                     user=user,
                     user_source=self,
-                    dn=domain_entry.distinguishedName,
+                    dn=domain_entry.entry_dn,
                     username=identifier
                 ).save()
                 results['info'].append(
@@ -301,7 +301,7 @@ class DomainEntrySource(models.Model):
             GroupDomainLink(
                 group=group,
                 group_source=self,
-                dn=domain_entry.distinguishedName,
+                dn=domain_entry.entry_dn,
                 group_name=identifier
             ).save()
             results['info'].append(
@@ -314,7 +314,7 @@ class DomainEntrySource(models.Model):
                 GroupDomainLink(
                     group=group,
                     group_source=self,
-                    dn=domain_entry.distinguishedName,
+                    dn=domain_entry.entry_dn,
                     group_name=identifier
                 ).save()
                 results['info'].append(
@@ -335,7 +335,7 @@ class DomainEntrySource(models.Model):
 
             if not hasattr(domain_entry, self.identifying_attribute):
                 results['error'].append(
-                    f'Entity {domain_entry.dn} in EntrySource: {self.name} has no attribute '
+                    f'Entity {domain_entry.entry_dn} in EntrySource: {self.name} has no attribute '
                     f'{self.identifying_attribute}'
                 )
             else:
