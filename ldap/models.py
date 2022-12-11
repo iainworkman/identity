@@ -385,8 +385,6 @@ class DomainEntrySource(models.Model):
         return None
 
 
-
-
 class UserDomainLink(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name='user_links')
     user_source = models.ForeignKey(DomainEntrySource, on_delete=models.PROTECT, related_name='user_links')
