@@ -73,6 +73,10 @@ TEMPLATES = [
 ]
 
 AUTH_USER_MODEL = 'sisulu.User'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'ldap.auth.backends.DomainModelBackend'
+]
 
 WSGI_APPLICATION = 'project.wsgi.application'
 

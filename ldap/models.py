@@ -5,8 +5,10 @@ from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.utils.module_loading import import_string
+from django.views.decorators.debug import sensitive_variables
 
 from ldap3 import Server, Connection, ALL_ATTRIBUTES
+from ldap3.core.exceptions import LDAPException
 
 from sisulu.fields import EncryptedCharField
 
@@ -77,11 +79,12 @@ class Domain(models.Model):
             self.use_ssl
         )
 
-    def connection(self) -> Connection:
+    @sensitive_variables('password')
+    def connection(self, user=None, password=None) -> Connection:
         return Connection(
             self.server(),
-            self.bind_user_dn,
-            self.bind_user_password
+            user or self.bind_user_dn,
+            password or self.bind_user_password
         )
 
     def search(self, search_base = None, search_filter = '', search_scope = 'SUBTREE', attributes = None):
@@ -192,6 +195,14 @@ class DomainEntrySource(models.Model):
     )
     is_enabled = models.BooleanField(default=True)
     source_type = models.CharField(max_length=4, choices=SOURCE_TYPES)
+    is_authentication_source = models.BooleanField(
+        default=False,
+        help_text='Whether users from this source can participate in authentication'
+    )
+    authentication_priority = models.IntegerField(
+        default=0,
+        help_text='Determines the order in which sources will be checked when authenticating'
+    )
 
     class Meta:
         ordering = ['name']
@@ -241,7 +252,6 @@ class DomainEntrySource(models.Model):
 
         return results
 
-
     def push_entries(self):
         if self.is_read_only:
             return {
@@ -255,7 +265,7 @@ class DomainEntrySource(models.Model):
             'info': []
         }
 
-    def _pull_user(self, domain_entry, identifier, results):
+    def _pull_user(self, domain_entry, identifier, results=None):
         user_model = get_user_model()
         try:
             user = user_model.objects.get(username=identifier)
@@ -275,7 +285,8 @@ class DomainEntrySource(models.Model):
                 dn=domain_entry.entry_dn,
                 username=identifier
             ).save()
-            results['info'].append(f'Created user {user}')
+            if results:
+                results['info'].append(f'Created user {user}')
         else:
             try:
                 UserDomainLink.objects.get(user=user, user_source=self)
@@ -286,9 +297,12 @@ class DomainEntrySource(models.Model):
                     dn=domain_entry.entry_dn,
                     username=identifier
                 ).save()
-                results['info'].append(
-                    f'Linked existing user {user}'
-                )
+                if results:
+                    results['info'].append(
+                        f'Linked existing user {user}'
+                    )
+
+        return user
 
     def _pull_group(self, domain_entry, identifier, results):
         try:
@@ -346,6 +360,31 @@ class DomainEntrySource(models.Model):
                     self._pull_group(domain_entry, identifier, results)
 
         return results
+
+    @sensitive_variables('password')
+    def authenticate_user(self, username, password):
+        entry = self.fetch_entry(username)
+
+        if entry is not None:
+            server = self.read_container.domain.server()
+            connection = Connection(
+                server,
+                user=entry.entry_dn,
+                password=password,
+                raise_exceptions=True
+            )
+            try:
+                connection.open()
+                connection.bind()
+            except LDAPException:
+                pass
+            else:
+                connection.unbind()
+                return self._pull_user(entry, username)
+
+        return None
+
+
 
 
 class UserDomainLink(models.Model):
