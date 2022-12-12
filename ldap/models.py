@@ -179,7 +179,7 @@ class SchemaMapping(models.Model):
         user_model_fields = {}
         for domain_entry_attribute, user_model_field in self.reverse_field_mapping.items():
             if hasattr(domain_entry, domain_entry_attribute):
-                user_model_fields[user_model_field] = getattr(domain_entry, domain_entry_attribute)
+                user_model_fields[user_model_field] = getattr(domain_entry, domain_entry_attribute).value
             else:
                 logger.warning(
                     f'Missing domain entry attribute {domain_entry_attribute} when attempting to convert to user model'
@@ -304,7 +304,7 @@ class DomainEntrySource(models.Model):
             'info': []
         }
 
-    def _pull_user(self, domain_entry, identifier, results=None):
+    def _entry_to_user(self, domain_entry, identifier, results=None):
         user_model = get_user_model()
         try:
             user = user_model.objects.get(username=identifier)
@@ -336,13 +336,11 @@ class DomainEntrySource(models.Model):
 
         return user
 
-    def _pull_group(self, domain_entry, identifier, results):
+    def _entry_to_group(self, domain_entry, identifier, results):
         try:
             group = Group.objects.get(name=identifier)
         except Group.DoesNotExist:
-            group = Group(
-                name=identifier
-            )
+            group = Group(**self.schema_mapping.domain_entry_to_user_instance_fields(domain_entry))
             group.save()
             GroupDomainLink(
                 group=group,
@@ -387,9 +385,9 @@ class DomainEntrySource(models.Model):
             else:
                 identifier = getattr(domain_entry, self.identifying_attribute).value
                 if self.source_type == self.USER:
-                    self._pull_user(domain_entry, identifier, results)
+                    self._entry_to_user(domain_entry, identifier, results)
                 else:
-                    self._pull_group(domain_entry, identifier, results)
+                    self._entry_to_group(domain_entry, identifier, results)
 
         return results
 

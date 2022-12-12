@@ -7,7 +7,7 @@ from sisulu.models import User
 class UserAdminForm(ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'display_name', 'email', 'is_staff', 'is_active', 'date_joined', 'profile', 'groups']
+        fields = ['username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'date_joined', 'groups']
 
 
 class UserAdmin(admin.ModelAdmin):
