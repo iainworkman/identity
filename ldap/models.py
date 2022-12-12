@@ -154,7 +154,7 @@ class Container(models.Model):
 
 class SchemaMapping(models.Model):
     name = models.CharField(max_length=150, help_text='The name of the Schema Mapping')
-    field_mapping = models.JSONField(help_text='A mapping of user model field to domain entry attribute')
+    field_mapping = models.JSONField(help_text='A mapping of model field to domain entry attribute')
     reverse_field_mapping = models.JSONField(help_text='A mapping of domain entry attribute to model field')
 
     class Meta:
@@ -170,7 +170,7 @@ class SchemaMapping(models.Model):
                 domain_entry_attributes[domain_entry_attribute] = getattr(user_instance, user_model_field)
             else:
                 logger.warning(
-                    f'Missing user instance field {user_model_field} when attempting to convert to domain entity'
+                    f'Missing model instance field {user_model_field} when attempting to convert to domain entity'
                 )
 
         return domain_entry_attributes
@@ -182,7 +182,7 @@ class SchemaMapping(models.Model):
                 user_model_fields[user_model_field] = getattr(domain_entry, domain_entry_attribute).value
             else:
                 logger.warning(
-                    f'Missing domain entry attribute {domain_entry_attribute} when attempting to convert to user model'
+                    f'Missing domain entry attribute {domain_entry_attribute} when attempting to convert to model'
                 )
         return user_model_fields
 
