@@ -2,7 +2,7 @@ from django.contrib import admin, messages
 from django.forms import ModelForm, PasswordInput
 from ldap3.core.exceptions import LDAPException
 
-from ldap.models import Domain, DomainEntrySource, UserDomainLink, GroupDomainLink, Container
+from ldap.models import Domain, DomainEntrySource, UserDomainLink, GroupDomainLink, Container, SchemaMapping
 
 
 class DomainAdminForm(ModelForm):
@@ -34,5 +34,6 @@ class DomainEntrySourceAdmin(admin.ModelAdmin):
 admin.site.register(Domain, DomainAdmin)
 admin.site.register(Container)
 admin.site.register(DomainEntrySource, DomainEntrySourceAdmin)
+admin.site.register(SchemaMapping)
 admin.site.register(UserDomainLink)
 admin.site.register(GroupDomainLink)

@@ -77,6 +77,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'ldap.auth.backends.DomainModelBackend'
 ]
+USER_CREATE_METHOD = 'sisulu.auth.services.create_user_from_entry'
 
 WSGI_APPLICATION = 'project.wsgi.application'
 

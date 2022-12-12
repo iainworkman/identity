@@ -16,8 +16,14 @@ class User(AbstractUser):
         blank=True
     )
 
+    class Meta:
+        ordering = ['username']
+
     def get_full_name(self):
         return self.display_name
 
     def get_short_name(self):
         return self.username
+
+    def __str__(self):
+        return str(self.display_name)

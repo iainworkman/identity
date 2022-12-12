@@ -152,6 +152,41 @@ class Container(models.Model):
         )
 
 
+class SchemaMapping(models.Model):
+    name = models.CharField(max_length=150, help_text='The name of the Schema Mapping')
+    field_mapping = models.JSONField(help_text='A mapping of user model field to domain entry attribute')
+    reverse_field_mapping = models.JSONField(help_text='A mapping of domain entry attribute to model field')
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    def user_instance_to_domain_entry_attributes(self, user_instance):
+        domain_entry_attributes = {}
+        for user_model_field, domain_entry_attribute in self.field_mapping.items():
+            if hasattr(user_instance, user_model_field):
+                domain_entry_attributes[domain_entry_attribute] = getattr(user_instance, user_model_field)
+            else:
+                logger.warning(
+                    f'Missing user instance field {user_model_field} when attempting to convert to domain entity'
+                )
+
+        return domain_entry_attributes
+
+    def domain_entry_to_user_instance_fields(self, domain_entry):
+        user_model_fields = {}
+        for domain_entry_attribute, user_model_field in self.reverse_field_mapping.items():
+            if hasattr(domain_entry, domain_entry_attribute):
+                user_model_fields[user_model_field] = getattr(domain_entry, domain_entry_attribute)
+            else:
+                logger.warning(
+                    f'Missing domain entry attribute {domain_entry_attribute} when attempting to convert to user model'
+                )
+        return user_model_fields
+
+
 class DomainEntrySource(models.Model):
     GROUP = 'g'
     USER = 'u'
@@ -202,6 +237,10 @@ class DomainEntrySource(models.Model):
     authentication_priority = models.IntegerField(
         default=0,
         help_text='Determines the order in which sources will be checked when authenticating'
+    )
+    schema_mapping = models.ForeignKey(
+        SchemaMapping, on_delete=models.CASCADE, related_name='+',
+        help_text='The mapping of Domain Entry to User model, and vice versa'
     )
 
     class Meta:
@@ -270,15 +309,8 @@ class DomainEntrySource(models.Model):
         try:
             user = user_model.objects.get(username=identifier)
         except user_model.DoesNotExist:
-            if hasattr(settings, 'USER_CREATE_METHOD'):
-                user_create_method = import_string(settings.USER_CREATE_METHOD)
-                user = user_create_method(domain_entry)
-            else:
-                user = user_model(
-                    username=identifier,
-                    password=user_model.objects.make_random_password()
-                )
-                user.save()
+            user = user_model(**self.schema_mapping.domain_entry_to_user_instance_fields(domain_entry))
+            user.save()
             UserDomainLink(
                 user=user,
                 user_source=self,
