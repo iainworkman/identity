@@ -31,8 +31,6 @@ class ProfileAPIView(APIView):
 
 class LoginView(APIView):
 
-    serializer_class = UserSerializer
-
     @sensitive_variables('password')
     def post(self, request):
         username = request.data.get('username')
@@ -46,7 +44,7 @@ class LoginView(APIView):
                 }, status=400)
             else:
                 login(request, user)
-                return Response(self.serializer_class(instance=user).data)
+                return Response(UserSerializer(instance=user).data)
 
 
         return Response({
