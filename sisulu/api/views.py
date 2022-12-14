@@ -1,9 +1,10 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import get_object_or_404
 from django.views.decorators.debug import sensitive_variables
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -50,3 +51,12 @@ class LoginView(APIView):
         return Response({
             'message': 'Username and password both required'
         }, status=400)
+
+
+class LogoutView(APIView):
+
+    @staticmethod
+    def post(request):
+        logout(request)
+
+        return Response(JSONRenderer().render({'message': 'success'}))

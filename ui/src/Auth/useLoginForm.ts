@@ -1,30 +1,31 @@
 import useField from "../Forms/useField";
-import {requiredValidator} from "../Forms/Validators";
 import useRequest from "../Requests/useRequest";
 import {FormEventHandler, useEffect, useState} from "react";
+import useAuth from "./useAuth";
 
 interface useLoginFormOptions {
     submitUrl: string
+    onLoginSuccess?(): void
 }
 const useLoginForm = (options: useLoginFormOptions) => {
 
-    const {submitUrl} = options
+    const {submitUrl, onLoginSuccess} = options
     const {isLoading, error: submitError, sendRequest} = useRequest()
     const [isValid, setIsValid] = useState<boolean>(false)
 
     const usernameField = useField({
         name: 'username',
         label: 'Username',
-        validators: [requiredValidator],
         initial: '',
-        type: 'text'
+        type: 'text',
+        required: true
     })
     const passwordField = useField({
         name: 'password',
         label: 'Password',
-        validators: [requiredValidator],
         initial: '',
-        type: 'password'
+        type: 'password',
+        required: true
     })
 
     useEffect(() => {
@@ -35,9 +36,12 @@ const useLoginForm = (options: useLoginFormOptions) => {
         event.preventDefault()
         if (isValid) {
             await sendRequest(submitUrl, 'POST', {
-                username: usernameField.data,
-                password: passwordField.data
+                username: usernameField.value,
+                password: passwordField.value
             })
+            if(onLoginSuccess !== undefined) {
+                onLoginSuccess()
+            }
         }
     }
 

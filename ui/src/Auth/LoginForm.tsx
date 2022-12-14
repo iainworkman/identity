@@ -1,19 +1,31 @@
 import useLoginForm from "./useLoginForm";
+import {VStack, HStack, Button, Alert, AlertIcon} from "@chakra-ui/react";
+import ControlledField from "../Forms/ControlledField";
+import React from "react";
 
-const LoginForm = () => {
-    const {passwordField, usernameField, handleSubmit, isValid} = useLoginForm({submitUrl: '/api/login/'})
+interface LoginFormProps {
+    initialFocusRef?:  React.RefObject<HTMLInputElement>
+    onLoginSuccess?(): void
+}
+const LoginForm = (props: LoginFormProps) => {
+    const {initialFocusRef, onLoginSuccess} = props
+    const {passwordField, usernameField, handleSubmit, submitError} = useLoginForm({submitUrl: '/api/login/', onLoginSuccess})
 
     return (
         <form onSubmit={handleSubmit}>
-            <label htmlFor={usernameField.name}>{usernameField.label}</label>
-            <input id={usernameField.name} value={usernameField.data} name={usernameField.name} onChange={usernameField.handleChange} onBlur={usernameField.handleBlur}/>
-            {usernameField.isValid ? undefined : <span><ul>{usernameField.errorMessages.map(message => <li key={message}>{message}</li>)}</ul></span>}
-
-            <label>{passwordField.label}</label>
-            <input type='password' id={passwordField.name} value={passwordField.data} name={passwordField.name} onChange={passwordField.handleChange} onBlur={usernameField.handleBlur}/>
-            {passwordField.isValid ? undefined : <span><ul>{passwordField.errorMessages.map(message => <li key={message}>{message}</li>)}</ul></span>}
-
-            <button disabled={!isValid}>Login</button>
+            {submitError &&   (
+                <Alert status='error'>
+                    <AlertIcon />
+                    {submitError}
+                </Alert>
+            )}
+            <VStack spacing={4}>
+                <ControlledField field={usernameField} initialFocusRef={initialFocusRef}/>
+                <ControlledField field={passwordField} />
+                <HStack width='100%' flexDirection='row-reverse'>
+                    <Button type='submit'>Log In</Button>
+                </HStack>
+            </VStack>
         </form>
     )
 }

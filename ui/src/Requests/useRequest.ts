@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-const getCookie = (name: string) => {
-    let cookieValue = null;
+export const getCookie = (name: string) => {
+    let cookieValue = undefined;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
@@ -35,9 +35,9 @@ const useRequest = () => {
         const httpAbortController = new AbortController()
         activeHttpRequests.current.push(httpAbortController)
 
-        if (headers.csrftoken === undefined) {
-            headers['csrftoken'] = getCookie('csrftoken')
-            console.log(headers.csrftoken)
+        if (headers['X-CSRFToken'] === undefined) {
+            headers['X-CSRFToken'] = getCookie('csrftoken')
+
         }
 
         if(headers['content-type'] === undefined) {
@@ -53,6 +53,7 @@ const useRequest = () => {
             })
 
             if(!response.ok) {
+                console.log(`Response not okay...`)
                 let errorMessage = 'An unknown error occurred' // Set a default message, but try and replace it with something more meaningful
 
                 // Try and decode the response data, and see if there is a message in there

@@ -4,50 +4,68 @@ interface ValidationResponse {
     isValid: boolean
     message: string
 }
-type Validator = (input: string, field: Field) => ValidationResponse
+type Validator = (input: string, field: FieldProps) => ValidationResponse
 
 
-export interface Field {
+export interface FieldProps {
     label?: string
     name: string
     helpText?: string
-    validators: Array<Validator>
+    validators?: Array<Validator>
     initial: string
     type: HTMLInputTypeAttribute
+    required?: boolean
 }
 
-const useField = (field: Field) => {
-    const {validators, initial} = field
-    const [data, setData] = useState<string>(initial)
+export interface Field extends FieldProps{
+    handleChange: ChangeEventHandler<HTMLInputElement>
+    handleBlur: FocusEventHandler<HTMLInputElement>
+    value: string
+    isValid: boolean
+    errorMessages: Array<string>
+}
+
+const useField = (fieldProps: FieldProps) : Field => {
+    const {validators, initial, required, label, name} = fieldProps
+    const [value, setValue] = useState<string>(initial)
     const [isValid, setIsValid] = useState<boolean>(true)
     const [errorMessages, setErrorMessages] = useState<Array<string>>([])
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-        setData(event.target.value)
+        setValue(event.target.value)
+    }
+
+    const validate = () => {
+        const newErrorMessages = []
+        if (required && value === '') {
+            newErrorMessages.push(`${label || name} is required`)
+        }
+        if (validators !== undefined) {
+            for (const validator of validators) {
+                const results = validator(value, fieldProps)
+                if (!results.isValid) {
+                    newErrorMessages.push(results.message)
+                }
+            }
+        }
+        setIsValid(newErrorMessages.length === 0)
+        setErrorMessages(newErrorMessages)
     }
 
     const handleBlur: FocusEventHandler<HTMLInputElement> = () => {
-        const newErrorMessages = []
-        for (const validator of validators) {
-            const results = validator(data, field)
-            if (!results.isValid) {
-                setIsValid(false)
-                newErrorMessages.push(results.message)
-            }
-        }
-        setErrorMessages(newErrorMessages)
+        validate()
     }
 
     return {
         // props
-        ...field,
+        ...fieldProps,
 
         // handlers
         handleChange,
         handleBlur,
 
         // state
-        data,
+        value,
         isValid,
         errorMessages,
     }
