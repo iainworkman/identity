@@ -410,7 +410,7 @@ class DomainEntrySource(models.Model):
                 pass
             else:
                 connection.unbind()
-                return self._pull_user(entry, username)
+                return self._entry_to_user(entry, username)
 
         return None
 

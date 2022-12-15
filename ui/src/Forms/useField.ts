@@ -1,4 +1,4 @@
-import {ChangeEventHandler, FocusEventHandler, HTMLInputTypeAttribute, useState} from 'react'
+import {ChangeEventHandler, HTMLInputTypeAttribute, useState} from 'react'
 
 interface ValidationResponse {
     isValid: boolean
@@ -19,29 +19,27 @@ export interface FieldProps {
 
 export interface Field extends FieldProps{
     handleChange: ChangeEventHandler<HTMLInputElement>
-    handleBlur: FocusEventHandler<HTMLInputElement>
+    validate(newValue?: string): boolean
     value: string
     isValid: boolean
     errorMessages: Array<string>
 }
 
 const useField = (fieldProps: FieldProps) : Field => {
-    const {validators, initial, required, label, name} = fieldProps
-    const [value, setValue] = useState<string>(initial)
+    const [value, setValue] = useState<string>(fieldProps.initial)
     const [isValid, setIsValid] = useState<boolean>(true)
     const [errorMessages, setErrorMessages] = useState<Array<string>>([])
 
-    const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-        setValue(event.target.value)
-    }
-
-    const validate = () => {
+    const validate = (newValue?: string) : boolean => {
         const newErrorMessages = []
-        if (required && value === '') {
-            newErrorMessages.push(`${label || name} is required`)
+        if (newValue === undefined) {
+            newValue = value
         }
-        if (validators !== undefined) {
-            for (const validator of validators) {
+        if (fieldProps.required && newValue === '') {
+            newErrorMessages.push(`${fieldProps.label || fieldProps.name} is required`)
+        }
+        if (fieldProps.validators !== undefined) {
+            for (const validator of fieldProps.validators) {
                 const results = validator(value, fieldProps)
                 if (!results.isValid) {
                     newErrorMessages.push(results.message)
@@ -50,10 +48,11 @@ const useField = (fieldProps: FieldProps) : Field => {
         }
         setIsValid(newErrorMessages.length === 0)
         setErrorMessages(newErrorMessages)
+        return (newErrorMessages.length === 0)
     }
-
-    const handleBlur: FocusEventHandler<HTMLInputElement> = () => {
-        validate()
+    const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+        setValue(event.target.value)
+        validate(event.target.value)
     }
 
     return {
@@ -62,7 +61,7 @@ const useField = (fieldProps: FieldProps) : Field => {
 
         // handlers
         handleChange,
-        handleBlur,
+        validate,
 
         // state
         value,

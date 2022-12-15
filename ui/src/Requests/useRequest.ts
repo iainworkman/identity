@@ -53,7 +53,6 @@ const useRequest = () => {
             })
 
             if(!response.ok) {
-                console.log(`Response not okay...`)
                 let errorMessage = 'An unknown error occurred' // Set a default message, but try and replace it with something more meaningful
 
                 // Try and decode the response data, and see if there is a message in there

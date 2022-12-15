@@ -16,7 +16,6 @@ const ControlledField = (props: ControlledFieldProps) => {
                 name={field.name}
                 value={field.value}
                 onChange={field.handleChange}
-                onBlur={field.handleBlur}
                 isInvalid={!field.isValid}
                 ref={initialFocusRef}
             />
