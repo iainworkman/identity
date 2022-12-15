@@ -3,7 +3,7 @@ import json
 from django.core.management import BaseCommand
 
 from ldap.models import Domain
-from ldap.serializers.domain import DomainSerializer
+from ldap.api.serializers import DomainSerializer
 
 
 class Command(BaseCommand):

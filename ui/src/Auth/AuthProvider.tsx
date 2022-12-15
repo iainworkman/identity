@@ -1,13 +1,14 @@
 import React, { createContext, useEffect, useState } from 'react'
 import {getCookie} from "../Requests/useRequest";
 
-interface User {
+export interface User {
     id: number
     first_name: string
     last_name: string
     username: string
     email: string
     groups: Array<string>
+    permissions: Array<string>
 }
 interface AuthContext {
     isLoading: boolean,

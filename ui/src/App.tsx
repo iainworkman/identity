@@ -1,9 +1,26 @@
 import React from 'react'
-import LoginForm from "./Auth/LoginForm";
 import {Box, ChakraProvider, Flex, Heading} from "@chakra-ui/react";
 import AuthProvider from "./Auth/AuthProvider";
 import AuthMenu from "./Auth/AuthMenu";
+import NavigationMenu, {NavigationMenuItem} from "./Navigation/NavigationMenu";
+import {faHome, faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
 
+const navigationMenuItems : Array<NavigationMenuItem> = [
+    {
+        name: 'Home',
+        path: '/',
+        permissions: [],
+        icon: faHome
+    },
+    {
+        name: 'Domains',
+        path: '/domains/',
+        permissions: [
+            'ldap.view_domain'
+        ],
+        icon: faUsersRectangle
+    }
+]
 function App() {
 
   return (
@@ -13,6 +30,9 @@ function App() {
                 <Flex alignItems='center' justifyContent='space-between' height='16'>
                     <Heading>Identity</Heading><AuthMenu />
                 </Flex>
+              </Box>
+              <Box>
+                  <NavigationMenu navItems={navigationMenuItems} />
               </Box>
           </AuthProvider>
       </ChakraProvider>
