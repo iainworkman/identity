@@ -172,7 +172,11 @@ class SchemaMapping(models.Model):
         domain_entry_attributes = {}
         for user_model_field, domain_entry_attribute in self.field_mapping.items():
             if hasattr(user_instance, user_model_field):
-                domain_entry_attributes[domain_entry_attribute] = getattr(user_instance, user_model_field)
+                model_attr = getattr(user_instance, user_model_field)
+                if callable(model_attr):
+                    domain_entry_attributes[domain_entry_attribute] = model_attr()
+                else:
+                    domain_entry_attributes[domain_entry_attribute] = model_attr
             else:
                 logger.warning(
                     f'Missing model instance field {user_model_field} when attempting to convert to domain entity'
