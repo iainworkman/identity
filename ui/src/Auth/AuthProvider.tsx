@@ -63,9 +63,11 @@ const AuthProvider = (props: AuthProviderProps) => {
                 }
             })
             .catch((error) => setError(error))
-            .finally(() => setIsLoading(false))
+            .finally(() => refreshAuth())
     }
-    const refreshAuth = () => {
+
+    const refreshAuth = () => { window.location.reload() }
+    const loadProfile = () => {
         setIsLoading(true)
 
         fetch('/api/profile/')
@@ -86,7 +88,7 @@ const AuthProvider = (props: AuthProviderProps) => {
     }
 
     useEffect(() => {
-        refreshAuth()
+        loadProfile()
     }, [])
 
     return (

@@ -58,8 +58,10 @@ const useRequest = () => {
                 // Try and decode the response data, and see if there is a message in there
                 try {
                     const responseData = await response.json()
-                    if (responseData.message) {
-                        setError(responseData.message)
+                    if (responseData.message || responseData.detail) {
+                        setError(responseData.message || responseData.detail)
+                    } else {
+                        setError(errorMessage)
                     }
                 } catch(error: any) {
                     setError(errorMessage)

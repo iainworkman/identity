@@ -4,6 +4,7 @@ import AuthProvider from "./Auth/AuthProvider";
 import AuthMenu from "./Auth/AuthMenu";
 import NavigationMenu, {NavigationMenuItem} from "./Navigation/NavigationMenu";
 import {faHome, faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
+import DataList from "./Components/DataList";
 
 const navigationMenuItems : Array<NavigationMenuItem> = [
     {
@@ -33,6 +34,18 @@ function App() {
               </Box>
               <Box>
                   <NavigationMenu navItems={navigationMenuItems} />
+                  <DataList path='/api/ldap/domains' caption='Domains' columns={
+                      [{
+                          key: 'name',
+                          header: 'Name',
+                      }, {
+                          key: 'host',
+                          header: 'Host'
+                      }, {
+                          key: 'use_ssl',
+                          header: 'Secure'
+                      }]
+                  } />
               </Box>
           </AuthProvider>
       </ChakraProvider>
