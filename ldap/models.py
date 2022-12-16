@@ -4,7 +4,6 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
-from django.utils.module_loading import import_string
 from django.views.decorators.debug import sensitive_variables
 
 from ldap3 import Server, Connection, ALL_ATTRIBUTES
@@ -125,6 +124,9 @@ class Domain(models.Model):
 
             return results
 
+    def add(self, dn, object_class=None, attributes=None, controls=None) :
+        with self.connection() as connection:
+            connection.add(dn, object_class, attributes, controls)
 
 class Container(models.Model):
     dn = models.CharField(max_length=250, help_text='The distinguished name of the container')
@@ -151,6 +153,9 @@ class Container(models.Model):
             attributes=attributes
         )
 
+    def add(self, cn, object_class=None, attributes=None, controls=None):
+        return self.domain.add(f'cn={cn},{self.dn}', object_class, attributes, controls)
+
 
 class SchemaMapping(models.Model):
     name = models.CharField(max_length=150, help_text='The name of the Schema Mapping')
@@ -163,7 +168,7 @@ class SchemaMapping(models.Model):
     def __str__(self):
         return self.name
 
-    def user_instance_to_domain_entry_attributes(self, user_instance):
+    def model_instance_to_domain_entry_attributes(self, user_instance):
         domain_entry_attributes = {}
         for user_model_field, domain_entry_attribute in self.field_mapping.items():
             if hasattr(user_instance, user_model_field):
@@ -175,7 +180,7 @@ class SchemaMapping(models.Model):
 
         return domain_entry_attributes
 
-    def domain_entry_to_user_instance_fields(self, domain_entry):
+    def domain_entry_to_model_instance_fields(self, domain_entry):
         user_model_fields = {}
         for domain_entry_attribute, user_model_field in self.reverse_field_mapping.items():
             if hasattr(domain_entry, domain_entry_attribute):
@@ -199,15 +204,19 @@ class DomainEntrySource(models.Model):
         max_length=250,
         help_text='The name for the entry source.'
     )
+    object_class = models.CharField(
+        max_length=250,
+        help_text='Object class used when searching for and creating entries'
+    )
     read_container = models.ForeignKey(
         Container,
         on_delete=models.PROTECT,
         related_name='reading_entry_sources',
         help_text='Container to read entries from.'
     )
-    read_filter = models.TextField(
+    extra_read_filter = models.TextField(
         blank=True, 
-        help_text='LDAP filters to apply when reading entries.'
+        help_text='Additional LDAP filters to apply when reading entries, in addition to the object_class'
     )
     is_read_only = models.BooleanField(
         default=False,
@@ -254,6 +263,13 @@ class DomainEntrySource(models.Model):
         domain = self.read_container.domain
         return domain.user_identifier_attribute if self.source_type == self.USER else domain.group_identifier_attribute
 
+    @property
+    def read_filter(self):
+        if self.extra_read_filter:
+            return f'(&(objectClass={self.object_class}){self.extra_read_filter})'
+        else:
+            return f'(objectClass={self.object_class})'
+
     def fetch_all_entries(self):
         return self.read_container.search(
             search_filter=self.read_filter,
@@ -298,6 +314,25 @@ class DomainEntrySource(models.Model):
                 'warning': [],
                 'info': ['Taking no push actions: source is read only']
             }
+
+        if self.source_type == self.GROUP:
+            domain_links = GroupDomainLink.objects.filter(group_source=self)
+        else:
+            domain_links = UserDomainLink.objects.filter(user_source=self)
+
+        all_entries = {entry.entry_dn: entry for entry in self.fetch_all_entries()}
+
+        for domain_link in domain_links:
+
+            if domain_link.dn not in all_entries:
+                if self.source_type == self.GROUP:
+                    attributes = self.schema_mapping.model_instance_to_domain_entry_attributes(domain_link.group)
+                else:
+                    attributes = self.schema_mapping.model_instance_to_domain_entry_attributes(domain_link.user)
+                self.create_container.add(
+                    f'{attributes.get("cn")}', self.object_class, attributes
+                )
+
         return {
             'error': [],
             'warning': [],
@@ -309,7 +344,7 @@ class DomainEntrySource(models.Model):
         try:
             user = user_model.objects.get(username=identifier)
         except user_model.DoesNotExist:
-            user = user_model(**self.schema_mapping.domain_entry_to_user_instance_fields(domain_entry))
+            user = user_model(**self.schema_mapping.domain_entry_to_model_instance_fields(domain_entry))
             user.save()
             UserDomainLink(
                 user=user,
@@ -340,7 +375,7 @@ class DomainEntrySource(models.Model):
         try:
             group = Group.objects.get(name=identifier)
         except Group.DoesNotExist:
-            group = Group(**self.schema_mapping.domain_entry_to_user_instance_fields(domain_entry))
+            group = Group(**self.schema_mapping.domain_entry_to_model_instance_fields(domain_entry))
             group.save()
             GroupDomainLink(
                 group=group,
