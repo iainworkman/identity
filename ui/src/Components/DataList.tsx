@@ -11,9 +11,10 @@ interface DataListProps {
     path: string
     caption?: string
     columns: Array<APIListColumn>
+    keyField: string
 }
 const DataList = (props: DataListProps) => {
-    const {path, caption, columns} = props
+    const {path, caption, columns, keyField} = props
     const [search, setSearch] = useState<string | undefined>()
     const [filters, setFilters] = useState<Record<string, any> | undefined>()
     const [pageNumber, setPageNumber] = useState<number>(1)
@@ -38,7 +39,7 @@ const DataList = (props: DataListProps) => {
             {!isLoading && !error && listResponse !== undefined && listResponse.results.length > 0 ?
                 (
                     <TableContainer>
-                        <Table variant='striped' colorScheme='gray'>
+                        <Table variant='striped' colorScheme='gray' size='sm'>
                             {caption !== undefined ? <TableCaption>{caption}</TableCaption> : undefined}
                             <Thead>
                                 <Tr>
@@ -47,8 +48,8 @@ const DataList = (props: DataListProps) => {
                             </Thead>
                             <Tbody>
                                 {listResponse.results.map(row => (
-                                    <Tr>
-                                        {Object.values(row).map((columnValue) => <Td>{columnValue}</Td>)}
+                                    <Tr key={row[keyField]}>
+                                        {columns.map(column => <Td key={`${row[keyField]}${column.key}`}>{row[column.key]}</Td>)}
                                     </Tr>
                                 ))}
                             </Tbody>

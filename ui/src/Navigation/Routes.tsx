@@ -4,6 +4,7 @@ import {
 import ErrorPage from "../Pages/ErrorPage";
 import PageLayout from "../Pages/PageLayout";
 import Domains from "../Pages/Domains";
+import Users from "../Pages/Users";
 
 const router = createBrowserRouter([{
     path: '/',
@@ -12,6 +13,9 @@ const router = createBrowserRouter([{
     children: [{
         path: '/domains',
         element: <Domains/>
+    }, {
+        path: '/users',
+        element: <Users />
     }]
 }]);
 

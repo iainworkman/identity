@@ -14,7 +14,7 @@ class GroupSerializer(ModelSerializer):
 
 
 
-class UserSerializer(ModelSerializer):
+class ProfileSerializer(ModelSerializer):
     permissions = SerializerMethodField()
     groups = GroupSerializer(many=True)
 
@@ -26,3 +26,10 @@ class UserSerializer(ModelSerializer):
     @staticmethod
     def get_permissions(instance):
         return instance.get_all_permissions()
+
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'username', 'email']
+        read_only_fields = ['id', ]

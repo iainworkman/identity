@@ -1,6 +1,6 @@
 import React from 'react'
 import {Box, Card, CardBody, Flex, Heading, HStack} from "@chakra-ui/react";
-import {faHome, faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
+import {faHome, faUser, faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
 
 import {Outlet} from "react-router-dom";
 import AuthMenu from "../Auth/AuthMenu";
@@ -20,6 +20,14 @@ const navigationMenuItems : Array<NavigationMenuItem> = [
             'ldap.view_domain'
         ],
         icon: faUsersRectangle
+    },
+    {
+        name: 'Users',
+        path: '/users/',
+        permissions: [
+            'sisulu.view_user'
+        ],
+        icon: faUser
     }
 ]
 function App() {
