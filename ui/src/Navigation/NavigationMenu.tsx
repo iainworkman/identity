@@ -5,6 +5,7 @@ import {List, ListItem} from "@chakra-ui/react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 import {User} from "../Auth/AuthProvider";
+import {NavLink} from "react-router-dom";
 const ChakraIcon = chakra(FontAwesomeIcon)
 
 export interface NavigationMenuItem {
@@ -21,6 +22,10 @@ const NavigationMenu = (props: NavigationMenuProps) => {
     const{ navItems } = props
     const {user, isLoading} = useAuth()
 
+    const activeStyle = {
+        textDecoration: "underline"
+    }
+
     const canSeeMenuItem = (user:User | null, menuItem: NavigationMenuItem) => {
         return (
             (menuItem.permissions.length === 0) // No permissions specified
@@ -31,12 +36,14 @@ const NavigationMenu = (props: NavigationMenuProps) => {
 
     return (
         !isLoading ?
-        <List spacing='3'>
+        <List spacing='3' width='32'>
             {navItems.filter(menuItem => canSeeMenuItem(user, menuItem)).map(
                 menuItem => (
-                    <ListItem key={menuItem.name}>
-                        <ChakraIcon icon={menuItem.icon} color='teal.500'/>
-                        {menuItem.name}
+                    <ListItem key={menuItem.name} paddingX='3'>
+                        <NavLink to={menuItem.path} style={(state) => state.isActive ? activeStyle : undefined}>
+                            <ChakraIcon icon={menuItem.icon} color='teal.500' marginRight='1'/>
+                            {menuItem.name}
+                        </NavLink>
                     </ListItem>
                 )
             )}
