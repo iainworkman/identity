@@ -24,12 +24,9 @@ interface useAPIListOptions {
 }
 
 const useAPIList = (options: useAPIListOptions) => {
-    const { search, filters, pageNumber, pageSize=16, path, columns} = options
+    const { search, filters, pageNumber, pageSize=10, path, columns} = options
     const { isLoading, error, sendRequest } = useRequest()
     const [ listResponse, setListResponse ] = useState<APIListResponse | undefined>()
-    const [count, setCount] = useState<number>(0)
-    const [hasPrevPage, setHasPrevPage] = useState<boolean>(false)
-    const [hasNextPage, setHasNextPage] = useState<boolean>(false)
 
     useEffect(() => {
 
@@ -55,28 +52,13 @@ const useAPIList = (options: useAPIListOptions) => {
         sendRequest(fullPath, 'GET')
             .then(responseData => {
                 if(responseData !== undefined) {
-                    const formattedResults : Array<Record<string, any>> = []
-                    const columnKeys = columns.map(column => column.key)
-
-                    responseData.results.forEach( (row : Record<string,any>) => {
-                        let formattedRow : Record<string, any> = {}
-                        Object.entries(row).forEach(([key, value]) => {
-                            if(columnKeys.includes(key)) {
-                                formattedRow[key] = value
-                            }
-                        })
-                        formattedResults.push(formattedRow)
-                    })
-                    setCount(responseData.count)
-                    setHasPrevPage(responseData.previous !== null)
-                    setHasNextPage(responseData.next !== null)
-                    setListResponse({...responseData, results: formattedResults})
+                    setListResponse(responseData)
                 }
             })
 
     }, [search, filters, pageNumber, path, sendRequest, columns, pageSize])
 
-    return {isLoading, error, listResponse, count, hasPrevPage, hasNextPage}
+    return {isLoading, error, listResponse}
 }
 
 export default useAPIList

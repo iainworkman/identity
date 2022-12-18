@@ -23,13 +23,14 @@ const DataList = (props: DataListProps) => {
     const {path, caption, columns, keyField, onViewClicked, onEditClicked, onDeleteClicked} = props
     const [search, setSearch] = useState<string | undefined>()
     const [filters, setFilters] = useState<Record<string, any> | undefined>()
-    const [pageSize, setPageSize] = useState<number>(16)
+    const [pageSize, setPageSize] = useState<number>(10)
     const [pageNumber, setPageNumber] = useState<number>(1)
 
-    const {isLoading, error, listResponse, count, hasPrevPage, hasNextPage} = useAPIList({
+    const {isLoading, error, listResponse} = useAPIList({
         search: search,
         filters: filters,
         pageNumber: pageNumber,
+        pageSize: pageSize,
         path: path,
         columns: columns
     })
@@ -66,7 +67,7 @@ const DataList = (props: DataListProps) => {
                                 </Thead>
                                 <Tbody>
                                     {listResponse.results.map(row => (
-                                        <Tr key={row[keyField]}>
+                                        <Tr key={row[keyField]} title={JSON.stringify(row)}>
                                             {columns.map(column => <Td key={`${row[keyField]}${column.key}`}>{row[column.key]}</Td>)}
                                             {(onViewClicked !== undefined || onEditClicked !== undefined || onDeleteClicked!== undefined) && <Td>
                                                 {onViewClicked !== undefined &&  <IconButton marginRight='1' size='sm' aria-label='View' onClick={onViewClicked} icon={<FontAwesomeIcon icon={faEye}/>} />}
@@ -85,12 +86,12 @@ const DataList = (props: DataListProps) => {
                                 aria-label='Call Sage'
                                 fontSize='20px'
                                 variant='outline'
-                                disabled={!hasPrevPage}
+                                disabled={listResponse.previous === null}
                                 onClick={handlePrevClick}
                                 icon={<FontAwesomeIcon icon={faChevronLeft} />}
                             />
                             <Box as='span'>
-                                {`Page ${pageNumber} of ${Math.ceil(count / pageSize)}`}
+                                {`Page ${pageNumber} of ${Math.ceil(listResponse.count / pageSize)}`}
                             </Box>
                             <IconButton
                                 size='sm'
@@ -98,7 +99,7 @@ const DataList = (props: DataListProps) => {
                                 aria-label='Call Sage'
                                 fontSize='20px'
                                 variant='outline'
-                                disabled={!hasNextPage}
+                                disabled={listResponse.next === null}
                                 onClick={handleNextClick}
                                 icon={<FontAwesomeIcon icon={faChevronRight} />}
                             />
