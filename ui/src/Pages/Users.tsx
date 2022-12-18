@@ -4,7 +4,7 @@ import DataList from "../Components/DataList";
 const Users = () => {
         return <Box width='100%'>
         <Heading>Users</Heading>
-        <DataList keyField='id' path={'/api/users/'} columns={[
+        <DataList keyField='id' path={'/api/users/'} onViewClicked={() => {}} onEditClicked={()=>{}} onDeleteClicked={()=>{}} columns={[
             {
                 key: 'username',
                 header: 'Username'
