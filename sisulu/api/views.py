@@ -29,6 +29,7 @@ class ProfileAPIView(APIView):
 class UserListAPIView(ListAPIView):
     serializer_class = UserSerializer
     search_fields = ['first_name', 'last_name', 'username', 'email',  ]
+    page_size_query_param = 'page_size'
 
     def get_queryset(self):
         return User.objects.all()

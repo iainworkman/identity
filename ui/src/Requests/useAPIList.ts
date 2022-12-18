@@ -18,14 +18,18 @@ interface useAPIListOptions {
     search?: string,
     filters?: Record<string, Array<string>>
     pageNumber?: number
+    pageSize?: number
     path: string
     columns: Array<APIListColumn>
 }
 
 const useAPIList = (options: useAPIListOptions) => {
-    const { search, filters, pageNumber, path, columns} = options
-    const {isLoading, error, sendRequest} = useRequest()
-    const [listResponse, setListResponse] = useState<APIListResponse | undefined>()
+    const { search, filters, pageNumber, pageSize=16, path, columns} = options
+    const { isLoading, error, sendRequest } = useRequest()
+    const [ listResponse, setListResponse ] = useState<APIListResponse | undefined>()
+    const [count, setCount] = useState<number>(0)
+    const [hasPrevPage, setHasPrevPage] = useState<boolean>(false)
+    const [hasNextPage, setHasNextPage] = useState<boolean>(false)
 
     useEffect(() => {
 
@@ -41,6 +45,10 @@ const useAPIList = (options: useAPIListOptions) => {
                     params.set(key, value.join(','))
                 })
             }
+            if (pageNumber !== undefined && pageNumber !== 1) {
+                params.set('page', pageNumber.toString())
+            }
+            params.set('page_size', pageSize.toString())
             fullPath = `${path}?${params.toString()}`
         }
 
@@ -59,13 +67,16 @@ const useAPIList = (options: useAPIListOptions) => {
                         })
                         formattedResults.push(formattedRow)
                     })
+                    setCount(responseData.count)
+                    setHasPrevPage(responseData.previous !== null)
+                    setHasNextPage(responseData.next !== null)
                     setListResponse({...responseData, results: formattedResults})
                 }
             })
 
-    }, [search, filters, pageNumber, path, sendRequest, columns])
+    }, [search, filters, pageNumber, path, sendRequest, columns, pageSize])
 
-    return {isLoading, error, listResponse}
+    return {isLoading, error, listResponse, count, hasPrevPage, hasNextPage}
 }
 
 export default useAPIList

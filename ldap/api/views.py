@@ -11,6 +11,7 @@ from ldap.models import Domain
 class DomainListCreateAPIView(ListCreateAPIView):
     serializer_class = DomainSerializer
     search_fields = ['name', ]
+    page_size_query_param = 'page_size'
 
     def get_queryset(self):
         return Domain.objects.all()
