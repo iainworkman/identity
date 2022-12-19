@@ -33,7 +33,7 @@ const UserDetailModal = (props: UserDetailModalProps) => {
                     <DetailField fieldName={'Email'} fieldValue={user.email}/>
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme='teal' mr={3} onClick={onClose}>
+                    <Button colorScheme='brand' mr={3} onClick={onClose}>
                         Close
                     </Button>
                 </ModalFooter>

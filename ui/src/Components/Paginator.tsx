@@ -16,7 +16,7 @@ const Paginator = (props: PaginatorProps) => {
         <HStack justifyContent='flex-end' marginTop='2'>
             <IconButton
                 size='sm'
-                colorScheme='teal'
+                colorScheme='brand'
                 aria-label='Call Sage'
                 fontSize='20px'
                 variant='outline'
@@ -29,7 +29,7 @@ const Paginator = (props: PaginatorProps) => {
             </Box>
             <IconButton
                 size='sm'
-                colorScheme='teal'
+                colorScheme='brand'
                 aria-label='Call Sage'
                 fontSize='20px'
                 variant='outline'

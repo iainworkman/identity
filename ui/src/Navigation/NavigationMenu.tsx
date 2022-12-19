@@ -42,7 +42,7 @@ const NavigationMenu = (props: NavigationMenuProps) => {
                 menuItem => (
                     <ListItem key={menuItem.name} paddingX='3'>
                         <NavLink to={menuItem.path} style={(state) => state.isActive ? activeStyle : undefined} onClick={onNavClick}>
-                            <ChakraIcon fixedWidth icon={menuItem.icon} color='teal.500' marginRight='1'/>
+                            <ChakraIcon fixedWidth icon={menuItem.icon} color='brand.500' marginRight='1'/>
                             {menuItem.name}
                         </NavLink>
                     </ListItem>

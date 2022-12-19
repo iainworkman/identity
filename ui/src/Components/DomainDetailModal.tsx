@@ -37,7 +37,7 @@ const DomainDetailModal = (props: DomainDetailModalProps) => {
                     <DetailField fieldName={'Bind User DN'} fieldValue={domain.bind_user_dn} />
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme='teal' mr={3} onClick={onClose}>
+                    <Button colorScheme='brand' mr={3} onClick={onClose}>
                         Close
                     </Button>
                 </ModalFooter>

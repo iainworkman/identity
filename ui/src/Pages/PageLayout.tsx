@@ -9,7 +9,7 @@ import {
     Hide,
     HStack,
     IconButton,
-    Show,
+    Show, useColorModeValue,
     useDisclosure
 } from "@chakra-ui/react";
 import {faHome, faUser, faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
@@ -47,11 +47,12 @@ const navigationMenuItems : Array<NavigationMenuItem> = [
 function PageLayout() {
 
     const {isOpen, onOpen, onClose} = useDisclosure()
+
     return (
         <>
-            <Box backgroundColor='gray.900' as='header' padding='1.5'>
+            <Box backgroundColor='brand.900' as='header' padding='1.5'>
                 <Flex alignItems='center'  >
-                    <Heading flexGrow='1'>Identity</Heading>
+                    <Heading flexGrow='1' color='white'>Identity</Heading>
                     <Show below='md'>
                         <IconButton aria-label='Navigation Menu' marginRight='2' icon={ <FontAwesomeIcon icon={faBars}/> } onClick={onOpen}/>
                         <Drawer placement='left' onClose={onClose} isOpen={isOpen}>

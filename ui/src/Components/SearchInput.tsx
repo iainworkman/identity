@@ -34,7 +34,7 @@ const SearchInput = (props: SearchInputProps) => {
                 variant='filled'
             />
             <InputRightElement width='4.5rem'>
-                <Button h='1.75rem' size='sm' padding='2' colorScheme='teal' onClick={handleSearchClick}>
+                <Button h='1.75rem' size='sm' padding='2' colorScheme='brand' onClick={handleSearchClick}>
                     Search
                 </Button>
             </InputRightElement>

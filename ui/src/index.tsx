@@ -5,13 +5,14 @@ import {RouterProvider} from "react-router-dom";
 import Routes from "./Navigation/Routes";
 import {ChakraProvider} from "@chakra-ui/react";
 import AuthProvider from "./Auth/AuthProvider";
+import DefaultTheme from "./Themes/DefaultTheme";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 )
 root.render(
     <React.StrictMode>
-        <ChakraProvider>
+        <ChakraProvider theme={DefaultTheme}>
             <AuthProvider>
                 <RouterProvider router={Routes} />
             </AuthProvider>

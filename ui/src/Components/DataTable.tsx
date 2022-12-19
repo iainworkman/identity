@@ -64,9 +64,9 @@ const DataTable = (props: DataTableProps) => {
                                         <Tr key={row[keyField]}>
                                             {columns.filter(column => isColumnVisible(column)).map(column => <Td key={`${row[keyField]}${column.key}`}>{row[column.key]}</Td>)}
                                             {(onViewClicked !== undefined || onEditClicked !== undefined || onDeleteClicked!== undefined) && <Td width='1'>
-                                                {onViewClicked !== undefined &&  <IconButton marginRight='1' size='sm' aria-label='View' onClick={() => onViewClicked(row)} icon={<FontAwesomeIcon icon={faEye}/>} />}
-                                                {onEditClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' onClick={onEditClicked} icon={<FontAwesomeIcon icon={faPencil}/>} />}
-                                                {onDeleteClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' onClick={onDeleteClicked} icon={<FontAwesomeIcon icon={faTrash}/>} />}
+                                                {onViewClicked !== undefined &&  <IconButton marginRight='1' size='sm' aria-label='View' colorScheme='brand' variant='outline' onClick={() => onViewClicked(row)} icon={<FontAwesomeIcon icon={faEye}/>} />}
+                                                {onEditClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' colorScheme='brand' variant='outline' onClick={onEditClicked} icon={<FontAwesomeIcon icon={faPencil}/>} />}
+                                                {onDeleteClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' colorScheme='brand' variant='outline' onClick={onDeleteClicked} icon={<FontAwesomeIcon icon={faTrash}/>} />}
                                             </Td>}
                                         </Tr>
                                     ))}
@@ -76,7 +76,7 @@ const DataTable = (props: DataTableProps) => {
                     </>
                 ) : (
                     <Flex justifyContent='center' alignItems='center'>
-                        <Spinner color='teal.500' size='xl'/>
+                        <Spinner color='brand.500' size='xl'/>
                     </Flex>
                 )}
         </Box>
