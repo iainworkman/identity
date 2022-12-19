@@ -1,14 +1,14 @@
 import {Box, Divider, Heading, HStack, useDisclosure} from "@chakra-ui/react";
 import DataTable from "../Components/DataTable";
 import {useState} from "react";
-import {User} from "../Auth/AuthProvider";
 import useAuth from "../Auth/useAuth";
 import useAPIList from "../Requests/useAPIList";
 import SearchInput from "../Components/SearchInput";
 import {userHasPermission} from "../Auth/Services";
 import Paginator from "../Components/Paginator";
-import UserDetailModal from "../Components/UserDetailModal";
 import DomainDetailModal from "../Components/DomainDetailModal";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
 
 const Domains = () => {
 
@@ -58,6 +58,7 @@ const Domains = () => {
 
     return <Box width='100%'>
         <HStack>
+            <FontAwesomeIcon icon={faUsersRectangle} size='2x'/>
             <Heading flexGrow='1'>Domains</Heading>
             <SearchInput onSearch={setSearch} maxWidth='96'/>
         </HStack>

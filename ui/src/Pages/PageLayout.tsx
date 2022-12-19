@@ -9,10 +9,10 @@ import {
     Hide,
     HStack,
     IconButton,
-    Show, useColorModeValue,
+    Show,
     useDisclosure
 } from "@chakra-ui/react";
-import {faHome, faUser, faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
+import {faAddressCard, faUsers, faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
 
 import {Outlet} from "react-router-dom";
 import AuthMenu from "../Auth/AuthMenu";
@@ -22,10 +22,10 @@ import {faBars} from "@fortawesome/free-solid-svg-icons";
 
 const navigationMenuItems : Array<NavigationMenuItem> = [
     {
-        name: 'Home',
+        name: 'Profile',
         path: '/',
         permissions: [],
-        icon: faHome
+        icon: faAddressCard
     },
     {
         name: 'Domains',
@@ -41,7 +41,7 @@ const navigationMenuItems : Array<NavigationMenuItem> = [
         permissions: [
             'sisulu.view_user'
         ],
-        icon: faUser
+        icon: faUsers
     }
 ]
 function PageLayout() {

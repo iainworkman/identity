@@ -8,7 +8,13 @@ from sisulu.models import User
 class UserAdminForm(ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'date_joined', 'groups']
+        fields = [
+            'id', 'username',
+            'first_name', 'last_name', 'email',
+            'is_staff', 'is_active', 'date_joined',
+            'profile_picture',
+            'groups', 'user_permissions']
+        read_only_fields = ['id', 'user_permissions']
 
 
 class UserAdmin(admin.ModelAdmin):

@@ -8,8 +8,8 @@ interface DetailFieldProps {
 const DetailField = (props: DetailFieldProps) => {
     const {fieldName, fieldValue} = props
     return fieldValue && (<>
-            <Text fontSize='sm' textTransform='uppercase'>{fieldName}</Text>
-            <Text fontSize='2xl' as='strong'>{fieldValue.toString()}</Text>
+            <Text fontSize='xs' textTransform='uppercase'>{fieldName}</Text>
+            <Text fontSize='lg' as='strong'>{fieldValue.toString()}</Text>
             <Divider marginBottom='2'/>
         </>
     )

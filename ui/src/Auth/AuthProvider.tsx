@@ -9,6 +9,7 @@ export interface User {
     email: string
     groups: Array<string>
     permissions: Array<string>
+    profile_picture: string | null
 }
 interface AuthContext {
     isLoading: boolean,

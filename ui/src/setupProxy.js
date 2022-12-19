@@ -12,4 +12,7 @@ module.exports = (app) => {
     app.use(
         '/backend/static', backendProxy
     )
+    app.use(
+        '/backend/media', backendProxy
+    )
 }

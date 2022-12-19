@@ -8,6 +8,8 @@ import {User} from "../Auth/AuthProvider";
 import UserDetailModal from "../Components/UserDetailModal";
 import {userHasPermission} from "../Auth/Services";
 import useAuth from "../Auth/useAuth";
+import {faUsers} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const Users = () => {
 
@@ -62,6 +64,7 @@ const Users = () => {
 
     return <Box width='100%'>
         <HStack>
+            <FontAwesomeIcon icon={faUsers} size='2x'/>
             <Heading flexGrow='1'>Users</Heading>
             <SearchInput onSearch={setSearch} maxWidth='96'/>
         </HStack>

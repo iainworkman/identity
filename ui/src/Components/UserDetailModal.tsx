@@ -10,6 +10,7 @@ import {
     ModalOverlay, Text
 } from "@chakra-ui/react";
 import DetailField from "./DetailField";
+import ProfileDetail from "./ProfileDetail";
 
 interface UserDetailModalProps {
     user: User
@@ -21,16 +22,13 @@ interface UserDetailModalProps {
 const UserDetailModal = (props: UserDetailModalProps) => {
     const {user, isOpen, onClose} = props
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size='xl'>
+        <Modal isOpen={isOpen} onClose={onClose} size='2xl'>
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader fontSize='3xl'>{user.first_name || user.last_name ? `${user.first_name} ${user.last_name}` : user.username}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <DetailField fieldName={'Username'} fieldValue={user.username}/>
-                    <DetailField fieldName={'First Name'} fieldValue={user.first_name}/>
-                    <DetailField fieldName={'Last Name'} fieldValue={user.last_name}/>
-                    <DetailField fieldName={'Email'} fieldValue={user.email}/>
+                    <ProfileDetail user={user} />
                 </ModalBody>
                 <ModalFooter>
                     <Button colorScheme='brand' mr={3} onClick={onClose}>

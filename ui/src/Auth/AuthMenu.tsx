@@ -27,7 +27,7 @@ const AuthMenu = () => {
         <>
             <Menu>
                 <MenuButton>
-                    <Avatar name={!isLoading && user !== null ? `${user.username}` : undefined} size={['sm', null, 'md']}/>
+                    <Avatar src={!isLoading && user !== null && user.profile_picture !== null ? user.profile_picture : undefined} name={!isLoading && user !== null ? `${user.username}` : undefined} size={['sm', null, 'md']}/>
                 </MenuButton>
                 <MenuList>
                     {isAuthenticated ? (
