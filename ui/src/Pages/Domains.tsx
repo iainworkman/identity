@@ -6,7 +6,7 @@ const Domains = () => {
 
     return <Box width='100%'>
         <Heading>Domains</Heading>
-        <DataList keyField='id' path={'/api/ldap/domains/'} columns={[
+        <DataList keyField='id' columns={[
             {
                 key: 'host',
                 header: 'Host'

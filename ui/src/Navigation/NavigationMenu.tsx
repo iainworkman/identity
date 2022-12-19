@@ -17,9 +17,10 @@ export interface NavigationMenuItem {
 
 interface NavigationMenuProps {
     navItems: Array<NavigationMenuItem>
+    onNavClick?(): void
 }
 const NavigationMenu = (props: NavigationMenuProps) => {
-    const{ navItems } = props
+    const{ navItems, onNavClick } = props
     const {user, isLoading} = useAuth()
 
     const activeStyle = {
@@ -40,8 +41,8 @@ const NavigationMenu = (props: NavigationMenuProps) => {
             {navItems.filter(menuItem => canSeeMenuItem(user, menuItem)).map(
                 menuItem => (
                     <ListItem key={menuItem.name} paddingX='3'>
-                        <NavLink to={menuItem.path} style={(state) => state.isActive ? activeStyle : undefined}>
-                            <ChakraIcon icon={menuItem.icon} color='teal.500' marginRight='1'/>
+                        <NavLink to={menuItem.path} style={(state) => state.isActive ? activeStyle : undefined} onClick={onNavClick}>
+                            <ChakraIcon fixedWidth icon={menuItem.icon} color='teal.500' marginRight='1'/>
                             {menuItem.name}
                         </NavLink>
                     </ListItem>

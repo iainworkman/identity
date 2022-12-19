@@ -1,10 +1,24 @@
 import React from 'react'
-import {Box, Card, CardBody, Flex, Heading, HStack} from "@chakra-ui/react";
+import {
+    Box,
+    Card,
+    CardBody,
+    Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay,
+    Flex,
+    Heading,
+    Hide,
+    HStack,
+    IconButton,
+    Show,
+    useDisclosure
+} from "@chakra-ui/react";
 import {faHome, faUser, faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
 
 import {Outlet} from "react-router-dom";
 import AuthMenu from "../Auth/AuthMenu";
 import NavigationMenu, {NavigationMenuItem} from "../Navigation/NavigationMenu";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faBars} from "@fortawesome/free-solid-svg-icons";
 
 const navigationMenuItems : Array<NavigationMenuItem> = [
     {
@@ -32,17 +46,33 @@ const navigationMenuItems : Array<NavigationMenuItem> = [
 ]
 function App() {
 
+    const {isOpen, onOpen, onClose} = useDisclosure()
     return (
         <>
-            <Box as='header' position='sticky' top='0' left='0' right='0'>
-                <Flex alignItems='center' justifyContent='space-between' height='16'>
-                    <Heading>Identity</Heading><AuthMenu />
+            <Box backgroundColor='gray.900' as='header' padding='1.5'>
+                <Flex alignItems='center'  >
+                    <Heading flexGrow='1'>Identity</Heading>
+                    <Show below='md'>
+                        <IconButton aria-label='Navigation Menu' marginRight='2' icon={ <FontAwesomeIcon icon={faBars}/> } onClick={onOpen}/>
+                        <Drawer placement='left' onClose={onClose} isOpen={isOpen}>
+                            <DrawerOverlay />
+                            <DrawerContent>
+                                <DrawerHeader borderBottomWidth='1px'>Navigation</DrawerHeader>
+                                <DrawerBody>
+                                    <NavigationMenu navItems={navigationMenuItems} onNavClick={onClose}/>
+                                </DrawerBody>
+                            </DrawerContent>
+                        </Drawer>
+                    </Show>
+                    <AuthMenu />
                 </Flex>
             </Box>
-            <HStack alignItems='flex-start' paddingRight='5'>
-                <Flex flexDirection='column' width='40' justifyContent='flex-start'>
-                    <NavigationMenu navItems={navigationMenuItems} />
-                </Flex>
+            <HStack alignItems='flex-start' padding='5' paddingTop='3'>
+                <Hide below='md'>
+                    <Flex flexDirection='column' width='40' justifyContent='flex-start'>
+                        <NavigationMenu navItems={navigationMenuItems} />
+                    </Flex>
+                </Hide>
                 <Card width='100%' variant='outline'>
                     <CardBody>
                         <Outlet />
