@@ -6,6 +6,8 @@ import SearchInput from "../Components/SearchInput";
 import Paginator from "../Components/Paginator";
 import {User} from "../Auth/AuthProvider";
 import UserDetailModal from "../Components/UserDetailModal";
+import {userHasPermission} from "../Auth/Services";
+import useAuth from "../Auth/useAuth";
 
 const Users = () => {
 
@@ -29,13 +31,15 @@ const Users = () => {
             key: 'email',
             header: 'Email Address',
             hideBelow: 'md'
-        }]
+        }
+    ]
 
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [search, setSearch] = useState<string>('')
-    const [user, setCurrentUser] = useState<User | undefined>(undefined)
+    const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined)
     const { isOpen: viewIsOpen, onOpen: viewOnOpen, onClose: viewOnClose } = useDisclosure()
 
+    const {user} = useAuth()
 
     const {listResponse} = useAPIList({
         search: search,
@@ -43,7 +47,6 @@ const Users = () => {
         pageSize: 10,
         path: '/api/users/'
     })
-
     const handlePreviousClicked = () => {
         setCurrentPage(currentPage - 1)
     }
@@ -53,7 +56,7 @@ const Users = () => {
     }
 
     const handleViewClicked = (user: User) => {
-        setCurrentUser(user)
+        setSelectedUser(user)
         viewOnOpen()
     }
 
@@ -65,9 +68,15 @@ const Users = () => {
         <Divider marginY='2' />
         {listResponse !== undefined && (
             <>
-                <DataTable keyField='id' data={listResponse} onViewClicked={handleViewClicked} onEditClicked={()=>{}} onDeleteClicked={()=>{}} columns={columns} />
+                <DataTable
+                    keyField='id'
+                    data={listResponse}
+                    onViewClicked={handleViewClicked}
+                    onEditClicked={user && userHasPermission(user, 'sisulu.change_user') ? ()=>{} : undefined}
+                    onDeleteClicked={user && userHasPermission(user, 'sisulu.delete_user') ? ()=>{} : undefined}
+                    columns={columns} />
                 <Paginator currentPage={currentPage} pageCount={Math.ceil(listResponse?.count / 10)} onPreviousClicked={handlePreviousClicked} onNextClicked={handleNextClicked} />
-                {user !== undefined && <UserDetailModal user={user} isOpen={viewIsOpen} onClose={viewOnClose} />}
+                {selectedUser !== undefined && <UserDetailModal user={selectedUser} isOpen={viewIsOpen} onClose={viewOnClose} />}
             </>
         )}
     </Box>

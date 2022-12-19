@@ -1,6 +1,6 @@
 import {User} from "../Auth/AuthProvider";
 import {
-    Button,
+    Button, Divider,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -9,6 +9,7 @@ import {
     ModalHeader,
     ModalOverlay, Text
 } from "@chakra-ui/react";
+import DetailField from "./DetailField";
 
 interface UserDetailModalProps {
     user: User
@@ -20,16 +21,16 @@ interface UserDetailModalProps {
 const UserDetailModal = (props: UserDetailModalProps) => {
     const {user, isOpen, onClose} = props
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size='full'>
+        <Modal isOpen={isOpen} onClose={onClose} size='xl'>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>{user.first_name || user.last_name ? `${user.first_name} ${user.last_name}` : user.username}</ModalHeader>
+                <ModalHeader fontSize='3xl'>{user.first_name || user.last_name ? `${user.first_name} ${user.last_name}` : user.username}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <Text><strong>Username:</strong> {user.username}</Text>
-                    <Text><strong>First Name:</strong> {user.first_name}</Text>
-                    <Text><strong>Last Name:</strong> {user.last_name}</Text>
-                    <Text><strong>Email:</strong> {user.email}</Text>
+                    <DetailField fieldName={'Username'} fieldValue={user.username}/>
+                    <DetailField fieldName={'First Name'} fieldValue={user.first_name}/>
+                    <DetailField fieldName={'Last Name'} fieldValue={user.last_name}/>
+                    <DetailField fieldName={'Email'} fieldValue={user.email}/>
                 </ModalBody>
                 <ModalFooter>
                     <Button colorScheme='teal' mr={3} onClick={onClose}>

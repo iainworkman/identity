@@ -61,7 +61,7 @@ const DataTable = (props: DataTableProps) => {
                                 </Thead>
                                 <Tbody>
                                     {data.results.map(row => (
-                                        <Tr key={row[keyField]} title={JSON.stringify(row)}>
+                                        <Tr key={row[keyField]}>
                                             {columns.filter(column => isColumnVisible(column)).map(column => <Td key={`${row[keyField]}${column.key}`}>{row[column.key]}</Td>)}
                                             {(onViewClicked !== undefined || onEditClicked !== undefined || onDeleteClicked!== undefined) && <Td width='1'>
                                                 {onViewClicked !== undefined &&  <IconButton marginRight='1' size='sm' aria-label='View' onClick={() => onViewClicked(row)} icon={<FontAwesomeIcon icon={faEye}/>} />}
