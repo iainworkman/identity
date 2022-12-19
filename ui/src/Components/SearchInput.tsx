@@ -31,6 +31,7 @@ const SearchInput = (props: SearchInputProps) => {
                 placeholder='Enter search term'
                 onChange={handleInputChange}
                 onKeyUp={handleKeyUp}
+                variant='filled'
             />
             <InputRightElement width='4.5rem'>
                 <Button h='1.75rem' size='sm' padding='2' colorScheme='teal' onClick={handleSearchClick}>

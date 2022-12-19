@@ -1,11 +1,6 @@
 import useRequest from "./useRequest";
 import {useEffect, useState} from "react";
 
-export interface APIListColumn {
-    key: string
-    header: string
-}
-
 export interface APIListResponse {
     count: number
     next: null | string

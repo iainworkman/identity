@@ -44,7 +44,7 @@ const navigationMenuItems : Array<NavigationMenuItem> = [
         icon: faUser
     }
 ]
-function App() {
+function PageLayout() {
 
     const {isOpen, onOpen, onClose} = useDisclosure()
     return (
@@ -83,4 +83,4 @@ function App() {
     )
 }
 
-export default App
+export default PageLayout

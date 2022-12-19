@@ -1,5 +1,5 @@
-import {Box, Heading, useDisclosure} from "@chakra-ui/react";
-import DataList from "../Components/DataList";
+import {Box, Divider, Heading, HStack, useDisclosure} from "@chakra-ui/react";
+import DataTable from "../Components/DataTable"
 import useAPIList from "../Requests/useAPIList";
 import {useState} from "react";
 import SearchInput from "../Components/SearchInput";
@@ -16,15 +16,19 @@ const Users = () => {
         },
         {
             key: 'first_name',
-            header: 'First Name'
+            header: 'First Name',
+            hideBelow: 'md'
+
         },
         {
             key: 'last_name',
-            header: 'Last Name'
+            header: 'Last Name',
+            hideBelow: 'lg'
         },
         {
             key: 'email',
-            header: 'Email Address'
+            header: 'Email Address',
+            hideBelow: 'md'
         }]
 
     const [currentPage, setCurrentPage] = useState<number>(1)
@@ -54,11 +58,14 @@ const Users = () => {
     }
 
     return <Box width='100%'>
-        <Heading>Users</Heading>
+        <HStack>
+            <Heading flexGrow='1'>Users</Heading>
+            <SearchInput onSearch={setSearch} maxWidth='96'/>
+        </HStack>
+        <Divider marginY='2' />
         {listResponse !== undefined && (
             <>
-                <SearchInput onSearch={setSearch} />
-                <DataList keyField='id' data={listResponse} onViewClicked={handleViewClicked} onEditClicked={()=>{}} onDeleteClicked={()=>{}} columns={columns} />
+                <DataTable keyField='id' data={listResponse} onViewClicked={handleViewClicked} onEditClicked={()=>{}} onDeleteClicked={()=>{}} columns={columns} />
                 <Paginator currentPage={currentPage} pageCount={Math.ceil(listResponse?.count / 10)} onPreviousClicked={handlePreviousClicked} onNextClicked={handleNextClicked} />
                 {user !== undefined && <UserDetailModal user={user} isOpen={viewIsOpen} onClose={viewOnClose} />}
             </>

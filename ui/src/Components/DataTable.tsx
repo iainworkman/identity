@@ -1,15 +1,20 @@
-import {APIListColumn, APIListResponse} from "../Requests/useAPIList";
+import { APIListResponse} from "../Requests/useAPIList";
 import {
-    Box, Flex, IconButton, Spinner,
-    Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr
+    Box, Flex, Hide, IconButton, Show, Spinner,
+    Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr, useBreakpointValue
 } from "@chakra-ui/react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye, faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 
+export interface DataTableColumn {
+    key: string
+    header: string
 
-interface DataListProps {
+    hideBelow?: string
+}
+interface DataTableProps {
     caption?: string
-    columns: Array<APIListColumn>
+    columns: Array<DataTableColumn>
     keyField: string
     data?: APIListResponse
 
@@ -17,8 +22,28 @@ interface DataListProps {
     onEditClicked?(row: any): void
     onDeleteClicked?(row: any): void
 }
-const DataList = (props: DataListProps) => {
+const DataTable = (props: DataTableProps) => {
     const {data, caption, columns, keyField, onViewClicked, onEditClicked, onDeleteClicked} = props
+    const breakPointMapping : Record<string, any>= {
+        base: 2,
+        xs: 0,
+        sm: 1,
+        md: 2,
+        lg: 3,
+        xl: 4
+    }
+    const columnBreakpoint = useBreakpointValue(
+        breakPointMapping,
+        {ssr: false}
+    )
+
+    const isColumnVisible = (column: DataTableColumn) : boolean => {
+        if (column.hideBelow !== undefined && columnBreakpoint !== undefined) {
+            return columnBreakpoint >= breakPointMapping[column.hideBelow]
+        }
+
+        return true
+    }
 
     return (
         <Box>
@@ -30,15 +55,15 @@ const DataList = (props: DataListProps) => {
                                 {caption !== undefined ? <TableCaption>{caption}</TableCaption> : undefined}
                                 <Thead>
                                     <Tr>
-                                        {columns.map(column => <Th key={column.key}>{column.header}</Th>)}
-                                        {(onViewClicked !== undefined || onEditClicked !== undefined || onDeleteClicked!== undefined) && <Th>Actions</Th>}
+                                        {columns.filter(column => isColumnVisible(column)).map(column => <Th key={column.key}>{column.header}</Th>)}
+                                        {(onViewClicked !== undefined || onEditClicked !== undefined || onDeleteClicked!== undefined) && <Th width='1'>Actions</Th>}
                                     </Tr>
                                 </Thead>
                                 <Tbody>
                                     {data.results.map(row => (
                                         <Tr key={row[keyField]} title={JSON.stringify(row)}>
-                                            {columns.map(column => <Td key={`${row[keyField]}${column.key}`}>{row[column.key]}</Td>)}
-                                            {(onViewClicked !== undefined || onEditClicked !== undefined || onDeleteClicked!== undefined) && <Td>
+                                            {columns.filter(column => isColumnVisible(column)).map(column => <Td key={`${row[keyField]}${column.key}`}>{row[column.key]}</Td>)}
+                                            {(onViewClicked !== undefined || onEditClicked !== undefined || onDeleteClicked!== undefined) && <Td width='1'>
                                                 {onViewClicked !== undefined &&  <IconButton marginRight='1' size='sm' aria-label='View' onClick={() => onViewClicked(row)} icon={<FontAwesomeIcon icon={faEye}/>} />}
                                                 {onEditClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' onClick={onEditClicked} icon={<FontAwesomeIcon icon={faPencil}/>} />}
                                                 {onDeleteClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' onClick={onDeleteClicked} icon={<FontAwesomeIcon icon={faTrash}/>} />}
@@ -60,4 +85,4 @@ const DataList = (props: DataListProps) => {
     )
 }
 
-export default DataList
+export default DataTable

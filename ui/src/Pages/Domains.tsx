@@ -1,12 +1,12 @@
 import {Box, Heading} from "@chakra-ui/react";
-import DataList from "../Components/DataList";
+import DataTable from "../Components/DataTable";
 
 const Domains = () => {
 
 
     return <Box width='100%'>
         <Heading>Domains</Heading>
-        <DataList keyField='id' columns={[
+        <DataTable keyField='id' columns={[
             {
                 key: 'host',
                 header: 'Host'
