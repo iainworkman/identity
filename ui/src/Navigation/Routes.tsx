@@ -15,10 +15,16 @@ const router = createBrowserRouter([{
         path: '',
         element: <ProfilePage />
     }, {
-        path: '/domains',
-        element: <Domains/>
+        path: 'domains/',
+        children: [{
+            path: '',
+            element: <Domains/>
+        }, {
+            path: 'create/',
+            element: <h1>skdhjfkjsdhfksh</h1>
+        }]
     }, {
-        path: '/users',
+        path: 'users/',
         element: <Users />
     }]
 }]);
