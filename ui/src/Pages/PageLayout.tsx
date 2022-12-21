@@ -50,7 +50,7 @@ function PageLayout() {
 
     return (
         <>
-            <Box backgroundColor='brand.900' as='header' padding='1.5'>
+            <Box backgroundColor='brand.900' as='header' padding='1.5' zIndex='1500'>
                 <Flex alignItems='center'  >
                     <Heading flexGrow='1' color='white'>Identity</Heading>
                     <Show below='md'>

@@ -23,7 +23,7 @@ const LoginForm = (props: LoginFormProps) => {
                 <ControlledField field={usernameField} initialFocusRef={initialFocusRef}/>
                 <ControlledField field={passwordField} />
                 <HStack width='100%' flexDirection='row-reverse'>
-                    <Button type='submit' disabled={isLoading}>{isLoading ? <Spinner/> : 'Log In'}</Button>
+                    <Button colorScheme='brand' type='submit' disabled={isLoading}>{isLoading ? <Spinner/> : 'Log In'}</Button>
                 </HStack>
             </VStack>
         </form>

@@ -1,8 +1,6 @@
 import {User} from "./AuthProvider";
 
 export const userHasPermission = (user: User, permission: string) : boolean => {
-    console.log(`Checking if user has permission ${permission}`)
-    console.log(`${user.permissions.includes(permission)}`)
     return user.permissions.includes(permission)
 }
 

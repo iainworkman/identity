@@ -6,6 +6,7 @@ import PageLayout from "../Pages/PageLayout";
 import Domains from "../Pages/Domains";
 import Users from "../Pages/Users";
 import ProfilePage from "../Pages/ProfilePage";
+import DomainCreate from "../Pages/DomainCreate";
 
 const router = createBrowserRouter([{
     path: '/',
@@ -21,7 +22,7 @@ const router = createBrowserRouter([{
             element: <Domains/>
         }, {
             path: 'create/',
-            element: <h1>skdhjfkjsdhfksh</h1>
+            element: <DomainCreate />
         }]
     }, {
         path: 'users/',
