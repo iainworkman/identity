@@ -2,19 +2,23 @@ import useDrfForm from "../Forms/useDrfForm";
 import {Divider, Heading, Spinner, HStack, Button, Input} from "@chakra-ui/react";
 import DrfChakraInput from "../Forms/DrfChakraInput";
 import DrfChakraSwitch from "../Forms/DrfChakraSwitch";
+import {FormEventHandler} from "react";
 
 const DomainCreate = () => {
 
-    const {fields, fieldErrors, formError, isLoading, handleSubmit} = useDrfForm({schemaPath: '/api/ldap/domains/', action: 'POST'})
+    const {fields, fieldErrors, formError, isLoading, handleSubmit, watch} = useDrfForm({schemaPath: '/api/ldap/domains/', action: 'POST'})
+    const afterValidate = (data:any) => {console.log(data)}
+    const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+        event.preventDefault()
+        handleSubmit(afterValidate)
+    }
 
-    console.log(fieldErrors)
-    const onSubmit = (data:any) => {console.log(data)}
     return (
         !isLoading && fields !== undefined ?
         <>
             <Heading>Add Domain</Heading>
             <Divider marginY='2' />
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(afterValidate)}>
                 <DrfChakraInput field={fields.name} fieldErrors={fieldErrors.name} marginBottom='3'/>
                 <Heading as='h2' size='md' marginY='2'>Connection</Heading>
                 <Divider marginBottom='2'/>

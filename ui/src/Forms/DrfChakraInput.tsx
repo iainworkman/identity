@@ -10,7 +10,7 @@ interface DrfChakraInputProps {
 }
 const DrfChakraInput = (props: DrfChakraInputProps) => {
     const {field, fieldErrors, initialFocusRef, className, type} = props
-console.log(fieldErrors)
+
     return (
         <FormControl className={className}>
             <FormLabel color={fieldErrors ? 'red.300' : undefined} marginBottom='1'>{field.label}</FormLabel>
