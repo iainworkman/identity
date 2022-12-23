@@ -1,13 +1,13 @@
 import useAuth from "../Auth/useAuth";
 import { Spinner } from "@chakra-ui/react";
-import UserDetail from "./UserDetail";
+import UserPanel from "./UserPanel";
 
 const ProfileDetail = () => {
     const {user, isLoading} = useAuth()
 
     return (
         !isLoading && user !== null ?
-            <UserDetail user={user} /> : <Spinner size='lg' color='brand.500' />
+            <UserPanel user={user} /> : <Spinner size='lg' color='brand.500' />
     )
 }
 

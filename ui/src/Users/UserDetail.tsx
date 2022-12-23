@@ -1,29 +1,33 @@
+import {useParams} from "react-router-dom";
+import useRequest from "../Requests/useRequest";
+import {useEffect, useState} from "react";
 import {User} from "../Auth/AuthProvider";
-import {Avatar, Box, Heading, HStack, Text, VStack} from "@chakra-ui/react";
-import DetailField from "../Components/DetailField";
+import {Skeleton} from "@chakra-ui/react";
+import ErrorCard from "../Components/ErrorCard";
+import UserPanel from "./UserPanel";
 
-interface ProfileDetailProps {
-    user: User
-}
+const UserDetail = () => {
+    const { username } = useParams()
 
-const UserDetail = (props: ProfileDetailProps) => {
-    const {user} = props
+    const {isLoading, error, sendRequest} = useRequest()
+    const [user, setUser] = useState<User | undefined>()
+
+    useEffect(() => {
+        sendRequest(`/api/users/${username}/`)
+            .then(data => {
+                setUser(data as User)
+            })
+
+    }, [username, sendRequest])
+
     return (
-        <HStack alignItems='flex-start'>
-                <VStack alignItems='flex-start' marginRight='8' spacing='0'>
-                    <Avatar marginBottom='4' size='2xl' src={user.profile_picture !== null ? user.profile_picture : undefined} name={user.username}/>
-                    <Heading as='h3' size='md'>{`${user.first_name} ${user.last_name}`}</Heading>
-                    <Text marginTop='0'>{user.email}</Text>
-                </VStack>
-                <Box flexGrow='1'>
-                    <DetailField fieldName={'Username'} fieldValue={user.username}/>
-                    <DetailField fieldName={'First Name'} fieldValue={user.first_name}/>
-                    <DetailField fieldName={'Last Name'} fieldValue={user.last_name}/>
-                    <DetailField fieldName={'Email'} fieldValue={user.email}/>
-                </Box>
-
-            </HStack>
+        isLoading ? <Skeleton /> :
+            error ? <ErrorCard title='Unable to load' message='Error when loading user information' /> :
+                user !== undefined ? <UserPanel user={user} /> :
+                    <></>
     )
+
+
 }
 
 export default UserDetail
