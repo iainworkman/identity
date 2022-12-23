@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_variables
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -26,9 +26,19 @@ class ProfileAPIView(APIView):
 
 
 @method_decorator(permission_required('sisulu.view_user', raise_exception=True), name='list')
-class UserListAPIView(ListAPIView):
+@method_decorator(permission_required('sisulu.create_user', raise_exception=True), name='create')
+class UserCreateListAPIView(ListCreateAPIView):
     serializer_class = UserSerializer
     search_fields = ['first_name', 'last_name', 'username', 'email',  ]
+
+    def get_queryset(self):
+        return User.objects.all()
+
+
+class UserRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = UserSerializer
+    lookup_url_kwarg = 'username'
+    lookup_field = 'username'
 
     def get_queryset(self):
         return User.objects.all()

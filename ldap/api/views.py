@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 from ldap.api.serializers import DomainSerializer, DomainEntrySourceSerializer, ContainerSerializer
 from ldap.models import Domain, DomainEntrySource, Container
@@ -13,6 +13,16 @@ class DomainListCreateAPIView(ListCreateAPIView):
     serializer_class = DomainSerializer
     search_fields = ['name', ]
     page_size_query_param = 'page_size'
+
+    def get_queryset(self):
+        return Domain.objects.all()
+
+
+@method_decorator(permission_required('ldap.view_domain', raise_exception=True), name='retrieve')
+@method_decorator(permission_required('ldap.change_domain', raise_exception=True), name='update')
+@method_decorator(permission_required('ldap.delete_domain', raise_exception=True), name='destroy')
+class DomainRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = DomainSerializer
 
     def get_queryset(self):
         return Domain.objects.all()

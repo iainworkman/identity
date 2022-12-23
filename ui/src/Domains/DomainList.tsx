@@ -11,6 +11,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUsersRectangle, faPlus} from "@fortawesome/free-solid-svg-icons";
 import PermissionCheck from "../Auth/PermissionCheck";
 import NavButton from "../Navigation/NavButton";
+import {useNavigate} from "react-router-dom";
 
 const DomainList = () => {
 
@@ -33,8 +34,7 @@ const DomainList = () => {
 
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [search, setSearch] = useState<string>('')
-    const [selectedDomain, setSelectedDomain] = useState<any | undefined>(undefined)
-    const { isOpen: viewIsOpen, onOpen: viewOnOpen, onClose: viewOnClose } = useDisclosure()
+    const navigate = useNavigate()
 
     const {user} = useAuth()
 
@@ -54,8 +54,7 @@ const DomainList = () => {
     }
 
     const handleViewClicked = (domain: any) => {
-        setSelectedDomain(domain)
-        viewOnOpen()
+        navigate(`/domains/${domain.id}/`)
     }
 
     return (
@@ -67,7 +66,7 @@ const DomainList = () => {
                 </HStack>
                 <SearchInput onSearch={setSearch} maxWidth='96'/>
                 <PermissionCheck permissions={['ldap.add_domain']} user={user}>
-                    <NavButton to='/domains/create' leftIcon={<FontAwesomeIcon icon={faPlus}/>} colorScheme='brand' size='sm' aria-label='Create Domain'>
+                    <NavButton to='/domains/create/' leftIcon={<FontAwesomeIcon icon={faPlus}/>} colorScheme='brand' size='sm' aria-label='Create Domain'>
                         Create
                     </NavButton>
                 </PermissionCheck>
@@ -83,7 +82,6 @@ const DomainList = () => {
                         onDeleteClicked={user && userHasPermission(user, 'sisulu.delete_user') ? ()=>{} : undefined}
                         columns={columns} />
                     <Paginator currentPage={currentPage} pageCount={Math.ceil(listResponse?.count / 10)} onPreviousClicked={handlePreviousClicked} onNextClicked={handleNextClicked} />
-                    {selectedDomain !== undefined && <DomainDetailModal domain={selectedDomain} isOpen={viewIsOpen} onClose={viewOnClose} />}
                 </>
             )}
         </Box>

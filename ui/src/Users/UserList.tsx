@@ -1,15 +1,15 @@
-import {Box, Divider, Heading, HStack, useDisclosure} from "@chakra-ui/react";
+import {Box, Divider, Heading, HStack} from "@chakra-ui/react";
 import DataTable from "../Components/DataTable"
 import useAPIList from "../Requests/useAPIList";
 import {useState} from "react";
 import SearchInput from "../Components/SearchInput";
 import Paginator from "../Components/Paginator";
 import {User} from "../Auth/AuthProvider";
-import UserDetailModal from "../Components/UserDetailModal";
 import {userHasPermission} from "../Auth/Services";
 import useAuth from "../Auth/useAuth";
 import {faUsers} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useNavigate} from "react-router-dom";
 
 const UserList = () => {
 
@@ -38,8 +38,7 @@ const UserList = () => {
 
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [search, setSearch] = useState<string>('')
-    const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined)
-    const { isOpen: viewIsOpen, onOpen: viewOnOpen, onClose: viewOnClose } = useDisclosure()
+    const navigate = useNavigate()
 
     const {user} = useAuth()
 
@@ -58,8 +57,7 @@ const UserList = () => {
     }
 
     const handleViewClicked = (user: User) => {
-        setSelectedUser(user)
-        viewOnOpen()
+        navigate(`/users/${user.username}`)
     }
 
     return <Box width='100%'>
@@ -79,7 +77,6 @@ const UserList = () => {
                     onDeleteClicked={user && userHasPermission(user, 'sisulu.delete_user') ? ()=>{} : undefined}
                     columns={columns} />
                 <Paginator currentPage={currentPage} pageCount={Math.ceil(listResponse?.count / 10)} onPreviousClicked={handlePreviousClicked} onNextClicked={handleNextClicked} />
-                {selectedUser !== undefined && <UserDetailModal user={selectedUser} isOpen={viewIsOpen} onClose={viewOnClose} />}
             </>
         )}
     </Box>
