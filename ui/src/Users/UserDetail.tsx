@@ -1,12 +1,12 @@
 import {User} from "../Auth/AuthProvider";
 import {Avatar, Box, Heading, HStack, Text, VStack} from "@chakra-ui/react";
-import DetailField from "./DetailField";
+import DetailField from "../Components/DetailField";
 
 interface ProfileDetailProps {
     user: User
 }
 
-const ProfileDetail = (props: ProfileDetailProps) => {
+const UserDetail = (props: ProfileDetailProps) => {
     const {user} = props
     return (
         <HStack alignItems='flex-start'>
@@ -26,4 +26,4 @@ const ProfileDetail = (props: ProfileDetailProps) => {
     )
 }
 
-export default ProfileDetail
+export default UserDetail

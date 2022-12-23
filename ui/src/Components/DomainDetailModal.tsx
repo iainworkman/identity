@@ -1,4 +1,3 @@
-import {User} from "../Auth/AuthProvider";
 import {
     Button,
     Modal,
@@ -7,7 +6,7 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
-    ModalOverlay, Text
+    ModalOverlay
 } from "@chakra-ui/react";
 import DetailField from "./DetailField";
 
@@ -15,7 +14,6 @@ interface DomainDetailModalProps {
     domain: any
     isOpen: boolean
     onClose(): void
-
 }
 
 const DomainDetailModal = (props: DomainDetailModalProps) => {

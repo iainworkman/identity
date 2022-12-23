@@ -3,10 +3,10 @@ import {
 } from "react-router-dom";
 import ErrorPage from "../Pages/ErrorPage";
 import PageLayout from "../Pages/PageLayout";
-import Domains from "../Pages/Domains";
-import Users from "../Pages/Users";
-import ProfilePage from "../Pages/ProfilePage";
-import DomainCreate from "../Pages/DomainCreate";
+import DomainList from "../Domains/DomainList";
+import UserList from "../Users/UserList";
+import ProfileDetail from "../Users/ProfileDetail";
+import DomainCreate from "../Domains/DomainCreate";
 
 const router = createBrowserRouter([{
     path: '/',
@@ -14,19 +14,19 @@ const router = createBrowserRouter([{
     errorElement: <ErrorPage />,
     children: [{
         path: '',
-        element: <ProfilePage />
+        element: <ProfileDetail />
     }, {
         path: 'domains/',
         children: [{
             path: '',
-            element: <Domains/>
+            element: <DomainList/>
         }, {
             path: 'create/',
             element: <DomainCreate />
         }]
     }, {
         path: 'users/',
-        element: <Users />
+        element: <UserList />
     }]
 }]);
 

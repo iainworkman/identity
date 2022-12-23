@@ -11,7 +11,7 @@ import useAuth from "../Auth/useAuth";
 import {faUsers} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-const Users = () => {
+const UserList = () => {
 
     const columns = [
         {
@@ -85,4 +85,4 @@ const Users = () => {
     </Box>
 }
 
-export default Users
+export default UserList

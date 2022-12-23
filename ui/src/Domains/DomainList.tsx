@@ -1,4 +1,4 @@
-import {Box, Button, Divider, Heading, HStack, IconButton, useDisclosure} from "@chakra-ui/react";
+import {Box, Divider, Heading, HStack, useDisclosure} from "@chakra-ui/react";
 import DataTable from "../Components/DataTable";
 import {useState} from "react";
 import useAuth from "../Auth/useAuth";
@@ -10,10 +10,9 @@ import DomainDetailModal from "../Components/DomainDetailModal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUsersRectangle, faPlus} from "@fortawesome/free-solid-svg-icons";
 import PermissionCheck from "../Auth/PermissionCheck";
-import {NavLink} from "react-router-dom";
 import NavButton from "../Navigation/NavButton";
 
-const Domains = () => {
+const DomainList = () => {
 
     const columns = [
         {
@@ -65,16 +64,13 @@ const Domains = () => {
                 <HStack flexGrow='1'>
                     <FontAwesomeIcon icon={faUsersRectangle} size='2x'/>
                     <Heading>Domains</Heading>
-
                 </HStack>
-
                 <SearchInput onSearch={setSearch} maxWidth='96'/>
                 <PermissionCheck permissions={['ldap.add_domain']} user={user}>
                     <NavButton to='/domains/create' leftIcon={<FontAwesomeIcon icon={faPlus}/>} colorScheme='brand' size='sm' aria-label='Create Domain'>
                         Create
                     </NavButton>
                 </PermissionCheck>
-
             </HStack>
             <Divider marginY='2' />
             {listResponse !== undefined && (
@@ -94,4 +90,4 @@ const Domains = () => {
     )
 }
 
-export default Domains
+export default DomainList

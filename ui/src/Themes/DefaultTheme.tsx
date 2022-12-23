@@ -6,7 +6,7 @@ const defaultTheme = extendTheme({})
 const theme = extendTheme({
     colors: {
         brand: defaultTheme.colors.blue,
-        info: defaultTheme.colors.blue,
+        info: defaultTheme.colors.teal,
         error: defaultTheme.colors.red,
         success: defaultTheme.colors.green,
         warning: defaultTheme.colors.orange
