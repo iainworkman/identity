@@ -1,4 +1,4 @@
-import {Box, Divider, Heading, HStack, useDisclosure} from "@chakra-ui/react";
+import {Box, Divider, Heading, Hide, HStack, Show, useDisclosure} from "@chakra-ui/react";
 import DataTable from "../Components/DataTable";
 import {useState} from "react";
 import useAuth from "../Auth/useAuth";
@@ -12,6 +12,7 @@ import {faUsersRectangle, faPlus} from "@fortawesome/free-solid-svg-icons";
 import PermissionCheck from "../Auth/PermissionCheck";
 import NavButton from "../Navigation/NavButton";
 import {useNavigate} from "react-router-dom";
+import NavIconButton from "../Navigation/NavIconButton";
 
 const DomainList = () => {
 
@@ -61,14 +62,21 @@ const DomainList = () => {
         <Box width='100%'>
             <HStack>
                 <HStack flexGrow='1'>
-                    <FontAwesomeIcon icon={faUsersRectangle} size='2x'/>
+                    <Show above='md'>
+                        <FontAwesomeIcon icon={faUsersRectangle} size='2x'/>
+                    </Show>
                     <Heading>Domains</Heading>
                 </HStack>
                 <SearchInput onSearch={setSearch} maxWidth='96'/>
                 <PermissionCheck permissions={['ldap.add_domain']} user={user}>
-                    <NavButton to='/domains/create/' leftIcon={<FontAwesomeIcon icon={faPlus}/>} colorScheme='brand' size='sm' aria-label='Create Domain'>
-                        Create
-                    </NavButton>
+                    <Show above='lg'>
+                        <NavButton to='/domains/create/' leftIcon={<FontAwesomeIcon icon={faPlus}/>} colorScheme='brand' size='sm' aria-label='Create Domain'>
+                            Create
+                        </NavButton>
+                    </Show>
+                    <Show below='lg'>
+                        <NavIconButton to='/domains/create/' aria-label='Create Domain' icon={<FontAwesomeIcon icon={faPlus}/>} size='sm' colorScheme='brand'/>
+                    </Show>
                 </PermissionCheck>
             </HStack>
             <Divider marginY='2' />
