@@ -3,7 +3,7 @@ import {
     Heading,
     HStack,
     Button,
-    Spinner
+    Spinner, SimpleGrid
 } from "@chakra-ui/react";
 import {useForm} from "react-hook-form";
 import useDrfSchema from "../Forms/useDrfSchema";
@@ -23,7 +23,7 @@ const DomainCreate = () => {
         sendRequest('/api/ldap/domains/', 'POST', data)
             .then(() => {
                 if (submitError === null) {
-                   navigate('/domains/')
+                    navigate('/domains/')
                 }
             })
     }
@@ -42,23 +42,22 @@ const DomainCreate = () => {
                         <FormInput name='name' register={register} fieldInfo={formSchema.name} errors={errors.name}/>
 
                         <Heading as='h2' size='md' marginTop='3'>Connection</Heading>
-                        <Divider/>
-                        <HStack alignItems='flex-start' marginY='3'>
+                        <Divider marginBottom='2'/>
+                        <SimpleGrid columns={[1, null, 3]} spacing='2'>
                             <FormInput name='host' register={register} fieldInfo={formSchema.host} errors={errors.host}/>
                             <FormInput name='port' type='number' register={register} fieldInfo={formSchema.port} errors={errors.port}/>
                             <FormSwitch name='use_ssl' register={register} fieldInfo={formSchema.use_ssl} errors={errors.use_ssl}/>
-                        </HStack>
-                        <HStack alignItems='flex-start' marginY='3'>
+                        </SimpleGrid>
+                        <SimpleGrid columns={[1, null, 2]} spacing='2'>
                             <FormInput name='bind_user_dn' register={register} fieldInfo={formSchema.bind_user_dn} errors={errors.bind_user_dn}/>
                             <FormInput name='bind_user_password' type='password' register={register} fieldInfo={formSchema.bind_user_password} errors={errors.bind_user_password}/>
-                        </HStack>
+                        </SimpleGrid>
                         <Heading as='h2' size='md' marginTop='3'>Entry Attributes</Heading>
-                        <Divider/>
-                        <HStack alignItems='flex-start' marginY='3'>
+                        <Divider marginBottom='2'/>
+                        <SimpleGrid columns={[1, null, 2]} spacing='2'>
                             <FormInput name='user_identifier_attribute' register={register} fieldInfo={formSchema.user_identifier_attribute} errors={errors.user_identifier_attribute}/>
                             <FormInput name='group_identifier_attribute' register={register} fieldInfo={formSchema.group_identifier_attribute} errors={errors.group_identifier_attribute}/>
-                        </HStack>
-
+                        </SimpleGrid>
                         <HStack justifyContent='flex-end' marginY='3'>
                             <Button type='submit' colorScheme='brand'>Submit</Button>
                         </HStack>
