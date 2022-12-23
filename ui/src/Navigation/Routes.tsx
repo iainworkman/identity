@@ -9,6 +9,7 @@ import ProfileDetail from "../Users/ProfileDetail";
 import DomainCreate from "../Domains/DomainCreate";
 import UserDetail from "../Users/UserDetail";
 import DomainDetail from "../Domains/DomainDetail";
+import DomainEdit from "../Domains/DomainEdit";
 
 const router = createBrowserRouter([{
     path: '/',
@@ -25,6 +26,9 @@ const router = createBrowserRouter([{
         }, {
             path: ':domainId/',
             element: <DomainDetail />
+        }, {
+            path: ':domainId/update/',
+            element: <DomainEdit />
         }, {
             path: 'create/',
             element: <DomainCreate />

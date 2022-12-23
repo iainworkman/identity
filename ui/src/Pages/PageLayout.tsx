@@ -10,11 +10,11 @@ import {
     HStack,
     IconButton,
     Show,
-    useDisclosure
+    useDisclosure, useToast
 } from "@chakra-ui/react";
 import {faAddressCard, faUsers, faUsersRectangle} from "@fortawesome/free-solid-svg-icons";
 
-import {Outlet} from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
 import AuthMenu from "../Auth/AuthMenu";
 import NavigationMenu, {NavigationMenuItem} from "../Navigation/NavigationMenu";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -47,6 +47,17 @@ const navigationMenuItems : Array<NavigationMenuItem> = [
 function PageLayout() {
 
     const {isOpen, onOpen, onClose} = useDisclosure()
+    const location = useLocation()
+    const toast = useToast()
+    if (location.state && location.state.message) {
+        toast({
+            title: location.state.message.title,
+            description: location.state.message.description,
+            status: location.state.message.status,
+            duration: 6000,
+            isClosable: true
+        })
+    }
 
     return (
         <>

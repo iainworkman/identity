@@ -7,24 +7,26 @@ import useRequest from "../Requests/useRequest";
 import ErrorCard from "../Components/ErrorCard";
 
 interface DomainFormProps {
+
+    url: string
+    method: 'POST' | 'PUT'
     domain?: any
     onSuccess?(domain: any): void
+    onCancel?() : void
 }
 
 const DomainForm = (props: DomainFormProps) => {
 
-    const { domain, onSuccess } = props
+    const { url, method, domain, onSuccess, onCancel } = props
 
-    const { register, handleSubmit, formState: { errors } } = useForm()
-    const { isLoading: schemaIsLoading, formSchema, error: schemaError} = useDrfSchema({path: '/api/ldap/domains/', action: 'POST'})
+    const { register, handleSubmit, formState: { errors } } = useForm({defaultValues: domain})
+    const { isLoading: schemaIsLoading, formSchema, error: schemaError} = useDrfSchema({path: url, action: method})
     const { isLoading : submitIsLoading, sendRequest, error: submitError} = useRequest()
 
     const handleIsValid = (data:any) => {
-        sendRequest('/api/ldap/domains/', 'POST', data)
+        sendRequest(url, method, data)
             .then((data) => {
-                if (data === undefined) {
-                    console.log(data)
-                } else {
+                if (data !== undefined) {
                     if (onSuccess !== undefined) {
                         onSuccess(data)
                     }
@@ -37,13 +39,9 @@ const DomainForm = (props: DomainFormProps) => {
             schemaError ? <ErrorCard title={'Error Loading Form'} message={'Failed to load form. Please try again later'}/> :
                 formSchema !== undefined ? (
                     <>
-                        <Heading>Add Domain</Heading>
                         {submitError !== null ? <ErrorCard title={'Form Error'} message={'Bad'}/> : undefined }
-                        <Divider marginY='2' />
                         <form onSubmit={handleSubmit(handleIsValid)}>
-
                             <FormInput name='name' register={register} fieldInfo={formSchema.name} errors={errors.name}/>
-
                             <Heading as='h2' size='md' marginTop='3'>Connection</Heading>
                             <Divider marginBottom='2'/>
                             <SimpleGrid columns={[1, null, 3]} spacing='2'>
@@ -62,6 +60,7 @@ const DomainForm = (props: DomainFormProps) => {
                                 <FormInput name='group_identifier_attribute' register={register} fieldInfo={formSchema.group_identifier_attribute} errors={errors.group_identifier_attribute}/>
                             </SimpleGrid>
                             <HStack justifyContent='flex-end' marginY='3'>
+                                {onCancel !== undefined && <Button onClick={onCancel}>Cancel</Button>}
                                 <Button type='submit' colorScheme='brand'>Submit</Button>
                             </HStack>
                         </form>

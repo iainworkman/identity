@@ -58,6 +58,10 @@ const DomainList = () => {
         navigate(`/domains/${domain.id}/`)
     }
 
+    const handleEditClicked = (domain: any) => {
+        navigate(`/domains/${domain.id}/update`)
+    }
+
     return (
         <Box width='100%'>
             <HStack>
@@ -85,8 +89,8 @@ const DomainList = () => {
                     <DataTable
                         keyField='id'
                         data={listResponse}
-                        onViewClicked={handleViewClicked}
-                        onEditClicked={user && userHasPermission(user, 'sisulu.change_user') ? ()=>{} : undefined}
+                        onViewClicked={user && userHasPermission(user, 'sisulu.view_user') ? handleViewClicked : undefined}
+                        onEditClicked={user && userHasPermission(user, 'sisulu.change_user') ? handleEditClicked : undefined}
                         onDeleteClicked={user && userHasPermission(user, 'sisulu.delete_user') ? ()=>{} : undefined}
                         columns={columns} />
                     <Paginator currentPage={currentPage} pageCount={Math.ceil(listResponse?.count / 10)} onPreviousClicked={handlePreviousClicked} onNextClicked={handleNextClicked} />

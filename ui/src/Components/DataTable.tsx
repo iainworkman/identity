@@ -65,8 +65,8 @@ const DataTable = (props: DataTableProps) => {
                                             {columns.filter(column => isColumnVisible(column)).map(column => <Td key={`${row[keyField]}${column.key}`}>{row[column.key]}</Td>)}
                                             {(onViewClicked !== undefined || onEditClicked !== undefined || onDeleteClicked!== undefined) && <Td width='1'>
                                                 {onViewClicked !== undefined &&  <IconButton marginRight='1' size='sm' aria-label='View' colorScheme='brand' variant='outline' onClick={() => onViewClicked(row)} icon={<FontAwesomeIcon icon={faEye}/>} />}
-                                                {onEditClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' colorScheme='brand' variant='outline' onClick={onEditClicked} icon={<FontAwesomeIcon icon={faPencil}/>} />}
-                                                {onDeleteClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' colorScheme='brand' variant='outline' onClick={onDeleteClicked} icon={<FontAwesomeIcon icon={faTrash}/>} />}
+                                                {onEditClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' colorScheme='brand' variant='outline' onClick={() => onEditClicked(row)} icon={<FontAwesomeIcon icon={faPencil}/>} />}
+                                                {onDeleteClicked !== undefined && <IconButton marginRight='1' size='sm' aria-label='Edit' colorScheme='brand' variant='outline' onClick={() => onDeleteClicked(row)} icon={<FontAwesomeIcon icon={faTrash}/>} />}
                                             </Td>}
                                         </Tr>
                                     ))}

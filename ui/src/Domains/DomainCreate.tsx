@@ -8,7 +8,11 @@ const DomainCreate = () => {
         navigate(`/domains/${domain.id}/`)
     }
 
-    return <DomainForm onSuccess={handleSuccess} />
+    const handleCancel = () => {
+        navigate('/domains/')
+    }
+
+    return <DomainForm onSuccess={handleSuccess} onCancel={handleCancel} url={`/api/ldap/domains/`} method='POST'/>
 }
 
 export default DomainCreate
