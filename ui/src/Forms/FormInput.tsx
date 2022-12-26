@@ -28,7 +28,7 @@ const FormInput = (props: FormInputProps) => {
                 {...register(name, fieldInfo.options)}
             />
             <FormErrorMessage>
-                {errors && `${errors.message}`}
+                {errors && `${errors.message || errors}`}
             </FormErrorMessage>
         </FormControl>
     )

@@ -5,7 +5,7 @@ const DomainCreate = () => {
 
     const navigate = useNavigate()
     const handleSuccess = (domain: any) => {
-        navigate(`/domains/${domain.id}/`)
+        navigate(`/domains/${domain.id}/`, {state: {message: {title: 'Domain Created', description: 'Domain was successfully created', status: 'success'}}})
     }
 
     const handleCancel = () => {

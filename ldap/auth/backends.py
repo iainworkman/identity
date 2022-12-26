@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import BaseBackend
 from django.views.decorators.debug import sensitive_variables
+from ldap3.core.exceptions import LDAPException
 
 from ldap.models import DomainEntrySource
 
@@ -15,9 +16,12 @@ class DomainModelBackend(BaseBackend):
             source_type=DomainEntrySource.USER, is_authentication_source=True
         ).order_by('authentication_priority')
         for auth_domain_source in sources:
-            user = auth_domain_source.authenticate_user(username, password)
-            if user is not None:
-                return user
+            try:
+                user = auth_domain_source.authenticate_user(username, password)
+                if user is not None:
+                    return user
+            except LDAPException:
+                pass
 
         return None
 

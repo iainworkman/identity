@@ -14,8 +14,10 @@ const UserDetail = () => {
 
     useEffect(() => {
         sendRequest(`/api/users/${username}/`)
-            .then(data => {
-                setUser(data as User)
+            .then(response => {
+                if (response.success) {
+                    setUser(response.data as User)
+                }
             })
 
     }, [username, sendRequest])

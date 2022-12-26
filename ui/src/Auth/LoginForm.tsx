@@ -16,7 +16,7 @@ const LoginForm = (props: LoginFormProps) => {
             {!isLoading && submitError &&  (
                 <Alert status='error'>
                     <AlertIcon />
-                    {submitError}
+                    {submitError.message || 'Unknown error'}
                 </Alert>
             )}
             <VStack spacing={4}>

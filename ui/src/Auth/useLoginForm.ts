@@ -37,12 +37,17 @@ const useLoginForm = (options: useLoginFormOptions) => {
 
             }
             if (allFieldsValid) {
-                const data = await sendRequest(submitUrl, 'POST', {
-                    username: usernameField.value,
-                    password: passwordField.value
-                })
+                const data = await sendRequest(
+                    submitUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        username: usernameField.value,
+                        password: passwordField.value
+                    })
+                    }
+                )
 
-                if(data && onLoginSuccess !== undefined) {
+                if(data.success && onLoginSuccess !== undefined) {
                     onLoginSuccess()
                 }
             }

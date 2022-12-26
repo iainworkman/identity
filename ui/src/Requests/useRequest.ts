@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+
+interface Response {
+    success: boolean,
+    data: {}
+}
+
 export const getCookie = (name: string) => {
     let cookieValue = undefined;
     if (document.cookie && document.cookie !== '') {
@@ -22,12 +28,12 @@ export const getCookie = (name: string) => {
 const useRequest = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [error, setError] = useState<string|null>(null)
+    const [error, setError] = useState<Record<string,any>|null>(null)
 
     // Maintain a lifetime persistent list of request abort controllers
     const activeHttpRequests = useRef<Array<AbortController>>([])
 
-    const sendRequest = useCallback(async (url:string, method:string = 'GET', body: Record<string,any>|null|undefined = null, headers :Record<string, any> = {}) => {
+    const sendRequest = useCallback(async (input:RequestInfo | URL, init?: RequestInit) : Promise<Response> => {
 
         setIsLoading(true)
 
@@ -35,55 +41,45 @@ const useRequest = () => {
         const httpAbortController = new AbortController()
         activeHttpRequests.current.push(httpAbortController)
 
+        const headers : Record<string, any> = init !== undefined && init.headers !== undefined ? {...init.headers} : {}
         if (headers['X-CSRFToken'] === undefined) {
             headers['X-CSRFToken'] = getCookie('csrftoken')
 
         }
-
         if(headers['content-type'] === undefined) {
             headers['content-type'] = 'application/json'
         }
 
+        let success = false
+        let data = {}
         try {
-            const response = await fetch(url, {
-                method: method,
-                body: body !== null && body !== undefined ? JSON.stringify(body) : undefined,
-                headers: headers,
-                signal: httpAbortController.signal
-            })
+            const response = await fetch(input, {headers, ...init})
 
-            if(!response.ok) {
-                let errorMessage = 'An unknown error occurred' // Set a default message, but try and replace it with something more meaningful
+            success = response.ok
 
-                // Try and decode the response data, and see if there is a message in there
-                try {
-                    const responseData = await response.json()
-                    if (responseData.message || responseData.detail) {
-                        setError(responseData.message || responseData.detail)
-                    } else {
-                        setError(errorMessage)
-                    }
-                } catch(error: any) {
-                    setError(errorMessage)
-                }
-            } else {
-                setError(null)
-                return await response.json()
+            try {
+                data = await response.json()
+            } catch {
+                data = { message: 'An unknown error occurred' }
             }
+        } catch (error: any) {
 
-        } catch (error:any) {
-            if(error.code !== 20) {
-                setError(error.message)
+            if (error.code !== 20) {
+                success = false
+                data = {message: error.message }
+
             }
-
         } finally {
-            setIsLoading(false)
-
-            // Remove this request from the list of activeHttpRequest abort controllers
             activeHttpRequests.current = activeHttpRequests.current.filter(
                 httpRequest => httpRequest !== httpAbortController
             )
+            setIsLoading(false)
+            if (!success) {
+                setError(data)
+            }
         }
+
+        return { success, data }
 
     }, [])
 

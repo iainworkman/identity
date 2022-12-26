@@ -36,10 +36,10 @@ const useAPIList = (options: useAPIListOptions) => {
             fullPath = `${path}?${params.toString()}`
         }
 
-        sendRequest(fullPath, 'GET')
-            .then(responseData => {
-                if(responseData !== undefined) {
-                    setListResponse(responseData)
+        sendRequest(fullPath, {method: 'GET'})
+            .then(response => {
+                if(response.success) {
+                    setListResponse(response.data as APIListResponse)
                 }
             })
 

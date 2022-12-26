@@ -22,8 +22,10 @@ const DomainEdit = () => {
 
     useEffect(() => {
         sendRequest(`/api/ldap/domains/${domainId}/`)
-            .then(data => {
-                setDomain(data)
+            .then(response => {
+                if(response.success) {
+                    setDomain(response.data)
+                }
             })
 
     }, [domainId, sendRequest])
